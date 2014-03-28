@@ -1,7 +1,10 @@
-[Boost Graph Library](http://www.boost.org/doc/libs/release/libs/graph/) and [DLib Optimization](http://dlib.net/optimization.html) for Client-Side Tree Layout
-===============================================================================================================================================================
+Client Side Tree Layout by [Emscripten](https://github.com/kripken/emscripten)
+==============================================================================
+This project demonstrates how to leverage c++ assets to build an SVG tree visualization on a client's web browser.
+The following assets are used:
+* Data structures by [Boost Graph Library](http://www.boost.org/doc/libs/release/libs/graph/).
+* Optimization algorithms by [DLib](http://dlib.net).
 
-This repository demonstrates how to leverage c++ assets to build an SVG tree visualization on a client's web browser.
 The code does the following:
 * Initialize a treeish directed acyclic graph data structure.
 * Generate a canonical spatial representation of the data structure from a vertex ranking metric.
@@ -15,10 +18,8 @@ Extra credit:
   [CGAL](http://doc.cgal.org) seems like the path of least resistence--check out [this repo](https://github.com/marcosscriven/cgaljs) for a jump start.
   Maybe there's a better way?
 
-
-But Boost Dlib are c++ libraries
---------------------------------
-
+Rationale
+---------
 This code resulted from an abandoned attempt under pure Javascript, included in this repository for posterity (I sure don't want it cluttering my computer).
 When I decided that I needed a segment tree, I tired of the one-off effort.
 The central focus of this repository is bending [Emscripten](https://github.com/kripken/emscripten) to the problem.
@@ -28,6 +29,7 @@ I anticipated the following hurdles from the get-go:
 * Size of the glue code needed to bring together multiple codebases.
   Both BGL and Dlib heavily templated, which I hope constitutes a virtue under Emscripten.
 * AMDifying the resulting code.
-  I see no value in covering the whole gamut of Javascript includes, since I expect very little glue code required to get things rolling.
+  I see no value in covering the whole gamut of Javascript imports, since I expect very little glue code required to get things rolling.
+  I'm using AMD alone until a need for some other arises.
 
 Elaboration on these hurdles and additional problems will be documented as encountered.
