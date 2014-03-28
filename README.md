@@ -1,6 +1,6 @@
 Client Side Tree Layout by [Emscripten](https://github.com/kripken/emscripten)
 ==============================================================================
-This project demonstrates how to leverage c++ assets to build an SVG tree visualization on a client's web browser.
+This project demonstrates how to leverage C++ assets to build an SVG tree visualization on a client's web browser.
 The following assets are used:
 * Data structures by [Boost Graph Library](http://www.boost.org/doc/libs/release/libs/graph/).
 * Optimization algorithms by [DLib](http://dlib.net).
@@ -47,3 +47,7 @@ I'm targeting an AMD module that exposes:
 * Rendering alternatives (the non-used alternative should get optimized out of existence):
   * React SVG.
   * Handlebars SVG.
+
+Speaking of optimization out of existence....
+I don't want to be specifying that some construct within a C++ file gets exported to have it included in the module.
+Any export from a C++ file should be rebound in a Javascript file (my AMD exports are very semantic).
