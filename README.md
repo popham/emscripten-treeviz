@@ -4,6 +4,7 @@ This project demonstrates how to leverage C++ assets to build an SVG tree visual
 The following assets are used:
 * Data structures by [Boost Graph Library](http://www.boost.org/doc/libs/release/libs/graph/).
 * Optimization algorithms by [DLib](http://dlib.net).
+* Splines by [John Burkardt](http://people.sc.fsu.edu/~jburkardt/cpp_src/spline/spline.html).
 
 The code does the following:
 * Initialize a treeish directed acyclic graph data structure.
