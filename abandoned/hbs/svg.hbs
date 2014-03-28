@@ -1,0 +1,23 @@
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.1">
+  <defs>
+    <symbol id="inactive-node" overflow="visible">
+      <circle r="{{ inactive.size }}" class="inactive" fill="none" stroke="black" stroke-width="{{ inactive.border }}"/>
+    </symbol>
+    <symbol id="active-node" overflow="visible">
+      <circle r="{{ active.size }}" class="active" fill="none" stroke="red" stroke-width="{{ active.border }}"/>
+    </symbol>
+    <symbol id="created-label" overflow="visible">
+      <tspan><text font-size="{{ label.size }}">Created: </text></tspan>
+    </symbol>
+    <symbol id="modified-label" overflow="visible">
+      <tspan><text font-size="{{ label.size }}">Modified: </text></tspan>
+    </symbol>
+    <symbol id="identifier-label" overflow="visible">
+      <tspan><text font-size="{{ label.size }}">Id: </text></tspan>
+    </symbol>
+  </defs>
+  {{{ tree }}}
+</svg>
