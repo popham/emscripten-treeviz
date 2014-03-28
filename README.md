@@ -17,6 +17,10 @@ Extra credit:
   then constraining the edge's interior Bezier points to a shortest path in the Voronoi graph.
   [CGAL](http://doc.cgal.org) seems like the path of least resistence--check out [this repo](https://github.com/marcosscriven/cgaljs) for a jump start.
   Maybe there's a better way?
+* [Mori](https://github.com/swannodette/mori) provides immutable data structures for Javascript.
+  How difficult would it be to get BGL or DLib to use these data structure?
+  How does Mori benchmark against BGL's best practice?
+  How does DLib benchmark against DLib's best practice?
 
 Rationale
 ---------
@@ -33,3 +37,13 @@ I anticipated the following hurdles from the get-go:
   I'm using AMD alone until a need for some other arises.
 
 Elaboration on these hurdles and additional problems will be documented as encountered.
+
+Marshalling Data Between Languages
+----------------------------------
+There's a bunch of example invocations found in some [QCon talk](http://kripken.github.io/mloc_emscripten_talk/qcon.html).
+I'm targeting an AMD module that exposes:
+* A constructor method that takes graph topology to a coarse visualization.
+* An iteration interface that maps the coarse visualization toward a better visualization.
+* Rendering alternatives (the non-used alternative should get optimized out of existence):
+  * React SVG.
+  * Handlebars SVG.
