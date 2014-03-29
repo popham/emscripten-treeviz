@@ -23,6 +23,18 @@ Extra credit:
   How difficult would it be to get BGL or DLib to use these data structure?
   How does Mori benchmark against BGL's best practice?
   How does DLib benchmark against DLib's best practice?
+* Wrap the functionality as an AMD module and use it directly from the main page.
+  The following usage seems the AMD way:
+```
+// `treeish` provided by AMD.
+treeish.compute('docs/scope1/scope2/some-doc')
+    .then(function (raw) {
+        var parser = new DOMParser()
+        var svg = parser.parseFromString(raw, 'application/xml');
+        var body = window.document.getElementsByTagName('body').item(0);
+        body.appendChild(svg.documentElement);
+   });
+```
 
 Rationale
 ---------
@@ -39,10 +51,10 @@ The following hurdles affected the final solution:
   I see no value in covering the whole gamut of Javascript imports, since I expect very little glue code required to get things rolling.
   I'm using AMD alone until a need for some other arises.
   </del>
-* I'm skeptical of its general applicability, but the README of the [Javascript version of bullet](https://github.com/kripken/ammo.js/) claims a huge penalty to wrapping things in a closure.
+* I'm skeptical of its general applicability, but the README of the [Javascript version of Bullet](https://github.com/kripken/ammo.js/) claims a 50% penalty to wrapping things in a closure.
   In my case of data in, then internal manipulation, and finally return a finalized data structure, I feel that most calls should be internal to my module, not looking in outer scopes, and therefore not subject to such a penalty.
-  The author of that README's solution to the problem, Webworkers, seems like the route I should be pursuing anyway.
-  So I'm looking to build a script that will operate in a dedicated worker as a global.
+  However, the author of that README's solution to the problem, Webworkers, seems like the route I should be pursuing anyway.
+  So I'm looking to build a script that will make itself at home in the global namespace of a dedicated worker.
   Usage would look something like the following:
 ```
 var treeComputation = Webworker('http://domain/path/treeish.js');
@@ -54,6 +66,7 @@ treeComputation.onmessage(function (event) {
     body.appendChild(svg.documentElement);
 });
 ```
+  As a bonus, mocking `XMLHttpRequest` should provide relatively easy testing.
 
 Marshalling Data Between Languages
 ----------------------------------
