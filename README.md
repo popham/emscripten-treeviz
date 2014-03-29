@@ -26,7 +26,7 @@ Extra credit:
 * Wrap the functionality as an AMD module and use it directly from the main page.
   The following usage seems the AMD way:
 ```
-// `treeish` provided by AMD.
+// `treeish` provided by AMD loader.
 treeish.compute('docs/scope1/scope2/some-doc')
     .then(function (raw) {
         var parser = new DOMParser()
@@ -42,7 +42,7 @@ This code resulted from an abandoned attempt under pure Javascript, included in 
 When I decided that I needed a segment tree, I tired of the one-off effort.
 The central focus of this repository is bending [Emscripten](https://github.com/kripken/emscripten) to the problem.
 
-The following hurdles affected the final solution:
+The following hurdles affected the final solution (expected hurdles that were nonissues have been struck through):
 * Marshalling data in and out of the resulting javascript code (in an acceptably literate manner).
 * Size of the glue code needed to bring together multiple codebases.
   Both BGL and Dlib heavily templated, which I hope constitutes a virtue under Emscripten.
@@ -54,7 +54,7 @@ The following hurdles affected the final solution:
 * I'm skeptical of its general applicability, but the README of the [Javascript version of Bullet](https://github.com/kripken/ammo.js/) claims a 50% penalty to wrapping things in a closure.
   In my case of data in, then internal manipulation, and finally return a finalized data structure, I feel that most calls should be internal to my module, not looking in outer scopes, and therefore not subject to such a penalty.
   However, the author of that README's solution to the problem, Webworkers, seems like the route I should be pursuing anyway.
-  So I'm looking to build a script that will make itself at home in the global namespace of a dedicated worker.
+  I'm therefore looking to build a script that will make itself at home in the global namespace of a dedicated worker.
   Usage would look something like the following:
 ```
 var treeComputation = Webworker('http://domain/path/treeish.js');
@@ -71,17 +71,16 @@ treeComputation.onmessage(function (event) {
 Marshalling Data Between Languages
 ----------------------------------
 There's a bunch of example invocations found in some [QCon talk](http://kripken.github.io/mloc_emscripten_talk/qcon.html).
-I'm targeting an AMD module that exposes:
+I'm targeting a global module that provides:
+* Javascript to extract the data's topology--this should be easily parametrized to permit changing data schema.
+* An `onmessage` that gets the data's url from the parent worker.
+* An `onmessage` that iterates the layout to an improved state (specify the number of iterations to perform, configure physics, and/or scale).
+  After iterating, the worker should `postMessage` the layout back to its parent.
 * A constructor method that takes graph topology to a coarse visualization.
 * An iteration interface that maps the coarse visualization toward a better visualization.
 * Rendering alternatives (the non-used alternative should get optimized out of existence):
   * React SVG.
   * Handlebars SVG.
 
-Speaking of optimization out of existence....
-I don't want to be specifying that some construct within a C++ file gets exported to have it included in the module.
-Any export from a C++ file should be rebound in a Javascript file (my AMD exports are very semantic).
 From the [Emscripten wiki](https://github.com/kripken/emscripten/wiki/Interacting-with-code#calling-compiled-functions-from-normal-javascript), the `cwrap(string name, type returns, type[] arguments)` method would work, but I want to define my interface from C++.
 Further, it looks like the compiler needs the exported functions enumerated to avoid optimization problems, and I want to keep things DRY if possible.
-
-The README of the [Javascript version of bullet](https://github.com/kripken/ammo.js/) claims that closures come with a harsh performance penalty of 50%.
