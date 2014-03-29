@@ -3,6 +3,7 @@ Client Side Tree Layout by [Emscripten](https://github.com/kripken/emscripten)
 This project demonstrates how to leverage C++ assets to build an SVG tree visualization on a client's web browser.
 The following assets are used:
 * Data structures by [Boost Graph Library](http://www.boost.org/doc/libs/release/libs/graph/).
+* Interval tree by [Boost ICL](http://www.boost.org/doc/libs/release/libs/icl/doc/html/index.html).
 * Optimization algorithms by [DLib](http://dlib.net).
 * Splines by [John Burkardt](http://people.sc.fsu.edu/~jburkardt/cpp_src/spline/spline.html).
 
@@ -29,15 +30,30 @@ This code resulted from an abandoned attempt under pure Javascript, included in 
 When I decided that I needed a segment tree, I tired of the one-off effort.
 The central focus of this repository is bending [Emscripten](https://github.com/kripken/emscripten) to the problem.
 
-I anticipated the following hurdles from the get-go:
+The following hurdles affected the final solution:
 * Marshalling data in and out of the resulting javascript code (in an acceptably literate manner).
 * Size of the glue code needed to bring together multiple codebases.
   Both BGL and Dlib heavily templated, which I hope constitutes a virtue under Emscripten.
-* AMDifying the resulting code.
+* <del>
+  AMDifying the resulting code.
   I see no value in covering the whole gamut of Javascript imports, since I expect very little glue code required to get things rolling.
   I'm using AMD alone until a need for some other arises.
-
-Elaboration on these hurdles and additional problems will be documented as encountered.
+  </del>
+* I'm skeptical of its general applicability, but the README of the [Javascript version of bullet](https://github.com/kripken/ammo.js/) claims a huge penalty to wrapping things in a closure.
+  In my case of data in, then internal manipulation, and finally return a finalized data structure, I feel that most calls should be internal to my module, not looking in outer scopes, and therefore not subject to such a penalty.
+  The author of that README's solution to the problem, Webworkers, seems like the route I should be pursuing anyway.
+  So I'm looking to build a script that will operate in a dedicated worker as a global.
+  Usage would look something like the following:
+```
+var treeComputation = Webworker('http://domain/path/treeish.js');
+treeComputation.postMessage('docs/scope1/scope2/some-doc');
+treeComputation.onmessage(function (event) {
+    var parser = new DOMParser()
+    var svg = parser.parseFromString(event.data, 'application/xml');
+    var body = window.document.getElementsByTagName('body').item(0);
+    body.appendChild(svg.documentElement);
+});
+```
 
 Marshalling Data Between Languages
 ----------------------------------
@@ -52,3 +68,7 @@ I'm targeting an AMD module that exposes:
 Speaking of optimization out of existence....
 I don't want to be specifying that some construct within a C++ file gets exported to have it included in the module.
 Any export from a C++ file should be rebound in a Javascript file (my AMD exports are very semantic).
+From the [Emscripten wiki](https://github.com/kripken/emscripten/wiki/Interacting-with-code#calling-compiled-functions-from-normal-javascript), the `cwrap(string name, type returns, type[] arguments)` method would work, but I want to define my interface from C++.
+Further, it looks like the compiler needs the exported functions enumerated to avoid optimization problems, and I want to keep things DRY if possible.
+
+The README of the [Javascript version of bullet](https://github.com/kripken/ammo.js/) claims that closures come with a harsh performance penalty of 50%.
