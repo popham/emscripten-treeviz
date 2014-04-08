@@ -2,5 +2,7 @@
 
 #include "matching.hpp"
 
-extern Matcher idMatcher;
-extern Matcher parentMatcher;
+const Path idRoot;
+const Path idPath;
+const Path parentRoot;
+const Path parentPath;
