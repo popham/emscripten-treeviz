@@ -1,0 +1,19 @@
+define(['./treeish'], function (treeish) {
+// Use case
+    // AMD loads dag library, where relative path locates the worker's script.
+    // load worker
+    // bind event listener(s)
+    var layout = new treeish.Layout('/path/to/script');
+
+    var parent = selectParentNodeFromDOM();
+
+    layout.load('resource url')
+        .then(treeish.scale(30,50))
+        .then(treeish.setPhysics())
+        .then(treeish.iterate(5))
+        .then(treeish.installSvg(parent))
+        .then(treeish.stop())
+        .done(
+            function () { console.log('stopped'); },
+            function () { console.log('failed'); });
+});
