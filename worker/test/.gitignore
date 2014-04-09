@@ -1,2 +1,11 @@
-treeish
+/treeish
 
+/deep
+/deep.js
+/deep.js.map
+/deep.json
+
+/flat
+/flat.js
+/flat.js.map
+/flat.json

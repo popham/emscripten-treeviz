@@ -1,5 +1,6 @@
 #include "sax.hpp"
 
+#include <iostream>
 #include <sstream>
 
 #include <boost/format.hpp>
@@ -52,7 +53,7 @@ const lest::test walk[] =
   }
 };
 
-int main(void)
-{
-    return lest::run(walk);
+int main(void) {
+  std::cout << jsonMock << std::endl;
+  return lest::run(walk);
 }
