@@ -1,3 +1,4 @@
 *.a
 *.o
 
+/node_modules/
