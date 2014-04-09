@@ -8,17 +8,17 @@ The following assets are used:
 * Splines by [John Burkardt](http://people.sc.fsu.edu/~jburkardt/cpp_src/spline/spline.html).
 
 The code provides a worker that does the following:
-* Initialize a treeish directed acyclic graph data structure.
-* Generate a canonical spatial representation of the data structure from a vertex ranking metric.
-* Attach springs within the spatial representation and impose a central force to the system.
-* Iterate the system toward equilibrium a few times.
+* Initializes a treeish directed acyclic graph data structure.
+* Generates a canonical spatial representation of the data structure from a vertex ranking metric.
+* Attaches springs within the spatial representation and imposes a central force to the system.
+* Iterates the system toward equilibrium.
 
 The worker provides AMD bindings to control the worker from its owner.
 These bindings have been built with an eye toward generic RPC.
 
 Extra credit:
 * Edge targets with multiple parents degenerate the perfectly handled tree to a treeish thing.
-  An edge could be routed efficiently by building a Voronoi graph from the vertex spatial layout, and
+  An edge could be routed efficiently by building a Voronoi diagram from the vertex spatial layout, and
   then constraining the edge's interior Bezier points to a shortest path in the Voronoi graph.
   [CGAL](http://doc.cgal.org) seems like the path of least resistence--check out [this repo](https://github.com/marcosscriven/cgaljs) for a jump start.
   Maybe there's a better way?
@@ -33,7 +33,7 @@ The following hurdles affected the final solution (expected hurdles that were no
 * <del>Marshalling data in and out of the resulting javascript code (in an acceptably literate manner).</del>
   Workers provide a natural separation.
 * Size of the glue code needed to bring together multiple codebases.
-  Both BGL and Dlib heavily templated, which I hope constitutes a virtue under Emscripten.
+  Both BGL and Dlib are heavily templated, which I hope constitutes a virtue under Emscripten.
 * <del>
   AMDifying the resulting code.
   I see no value in covering the whole gamut of Javascript imports, since I expect very little glue code required to get things rolling.
