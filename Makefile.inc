@@ -2,8 +2,19 @@ INCLUDES = -I /home/popham/include/boost_1_55_0/ -I $(ROOT) -I $(ROOT)/rapidjson
 LIBS = $(ROOT)/include
 SUBDIRS := $(wildcard */.)
 
-ARCHIVE = ar rvs
+ifdef DEBUG
+CPP = g++ -g -std=c++11 $(INCLUDES)
+else
 CPP = clang++ -std=c++11 $(INCLUDES)
+endif
+
+ifdef DEBUG
+EMCC_WORKER = /home/popham/emscripten/emcc -O0 -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES)
+else
+EMCC_WORKER = /home/popham/emscripten/emcc -O3 --closure 1 -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES)
+endif
+
+ARCHIVE = ar rvs
 
 build_libs: | $(LIBS)
 	make -C $(ROOT) lib

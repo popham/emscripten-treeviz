@@ -30,15 +30,12 @@ unsigned int Matcher::pop(void) {
   return _depthEnd;
 }
 
-// Wild card semantics for any paths deeper than the sought path.
+// This depth is the current object's distance from the array root.
+unsigned int Matcher::depth(void) {
+  // _depthEnd refers to path depth.
+  return _depthEnd;
+}
+
 bool Matcher::isMatch(void) const {
-  return _matchEnd == _soughtPath.size();
-}
-
-bool Matcher::isExactMatch(void) const {
-  return isMatch() && _depthEnd == _soughtPath.size();
-}
-
-std::string Matcher::status(void) const {
-  return "_matchEnd: " + std::to_string(_matchEnd) + "\n_depthEnd: " + std::to_string(_depthEnd) + "\n";
+  return _depthEnd == _matchEnd && _matchEnd == _soughtPath.size();
 }

@@ -11,7 +11,7 @@ Treeish::Treeish(void) : _graph() {}
 
 void Treeish::inject(char const * const json) {
   Stream is(const_cast<char * const>(json));
-  VertexPass vp(&_graph, vertexBase, vertexPath);
+  VertexPass vp(&_graph, vertexPath);
   if (!vp.parse(is)) {
     _graph.clear();
     response::error("Serialization of vertex data to data structure failed");
@@ -58,4 +58,28 @@ void Treeish::stop(void) {
 
 void Treeish::clear(void) {
   _graph.clear();
+}
+
+Treeish::VIterator Treeish::vBegin(void) const {
+  return boost::vertices(_graph).first;
+}
+
+Treeish::VIterator Treeish::vEnd(void) const {
+  return boost::vertices(_graph).second;  
+}
+
+Treeish::EIterator Treeish::eBegin(void) const {
+  return boost::edges(_graph).first;
+}
+
+Treeish::EIterator Treeish::eEnd(void) const {
+  return boost::edges(_graph).second;
+}
+
+Treeish::v_size Treeish::nVertices(void) const {
+  return boost::num_vertices(_graph);
+}
+
+Treeish::v_size Treeish::nEdges(void) const {
+  return boost::num_edges(_graph);
 }

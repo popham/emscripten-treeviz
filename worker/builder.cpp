@@ -2,51 +2,68 @@
 
 #include "layout.hpp"
 
-MatchingHandler::MatchingHandler(Path const & base,
-                                 Path const & path) :
-  _base(base),
-  _path(path),
+MatchingHandler::MatchingHandler(void) :
+  _currentMatcher(-1),
   _isKeyNext(false) {}
 
+void MatchingHandler::push_path(Path const & path) {
+  _matchers.push_back(path);
+}
+
+void MatchingHandler::StartArray(void) {
+  _currentMatcher += 1;
+}
+
+void MatchingHandler::EndArray(rapidjson::SizeType count) {
+  _currentMatcher -= 1;
+  if (_currentMatcher < _matchers.size()) {
+    _isKeyNext = _matchers[_currentMatcher].depth() > 0;
+  }
+}
+
 void MatchingHandler::StartObject(void) {
-  _isKeyNext = true;
+  if (_currentMatcher < _matchers.size()) {
+    _isKeyNext = true;
+
+    // Prepare stack for reentrant case handling.  Fine since empty keys are
+    // forbidden by JSON.
+    _matchers[_currentMatcher].push("");
+  }
+}
+
+void MatchingHandler::EndObject(rapidjson::SizeType size) {
+  if (_currentMatcher < _matchers.size()) {
+    // Nonzero depth implies we're still in an object.
+    _isKeyNext = _matchers[_currentMatcher].pop() > 0;
+  }
 }
 
 void MatchingHandler::String(Ch const * pValue,
                              rapidjson::SizeType length,
                              bool isCopy) {
-  std::string value(pValue, length);
+  // Insufficient information to determine whether key or value if a matcher is
+  // not active.
+  if (_currentMatcher < _matchers.size()) {
+    std::string value(pValue, length);
 
-  // We only care about string keys since we're looking for unsigned int values.
-  if (_isKeyNext) {
-    _isKeyNext = false;
-    _base.push(value);
-
-    // Only bother matching the id path once the base path has been matched.
-    // The two paths are disjoint.
-    if (_base.isMatch() && !_base.isExactMatch()) {
-      _path.push(value);
+    if (_isKeyNext) {
+      _isKeyNext = false;
+      _matchers[_currentMatcher].pop();
+      _matchers[_currentMatcher].push(value);
+    } else {
+      _isKeyNext = true;
+      // Do nothing on non-key strings.
     }
   }
 }
 
 void MatchingHandler::Uint(unsigned int value) {
-  // Exact match to avoid erroneous returns given a degenerate path.
-  if (_base.isMatch() && _path.isExactMatch()) {
-    Match(value);
-  }
-  _isKeyNext = true;
-}
+  if (_currentMatcher < _matchers.size()) {
+    if (isMatch()) {
+      Match(value);
+    }
 
-void MatchingHandler::EndObject(rapidjson::SizeType size) {
-  _isKeyNext = false; // [{}, "asdf", ...] implies a key of "asdf" without this.
-
-  if (_base.isMatch() && !_base.isExactMatch()) {
-    _path.pop();
-  }
-
-  if (_base.pop() == 0) {
-    EndRoot();
+    _isKeyNext = _matchers[_currentMatcher].depth() > 0;
   }
 }
 
@@ -56,15 +73,23 @@ bool MatchingHandler::parse(Stream & source) {
   return reader.Parse<rapidjson::kParseDefaultFlags>(source, *this);
 }
 
-std::string MatchingHandler::status(void) const {
-  return "_path:\n" + _path.status() + "\n_base:\n" + _base.status();
+bool MatchingHandler::isMatch(void) const {
+  if (_currentMatcher >= _matchers.size()) {
+    return false;
+  }
+
+  bool ok=true;
+  for (auto i : _matchers) { ok &= i.isMatch(); }
+
+  return ok;
 }
 
 VertexPass::VertexPass(Graph * const pGraph,
-                       Path const & base,
                        Path const & path) :
-  MatchingHandler(base, path),
-  _pGraph(pGraph) {}
+  _pGraph(pGraph)
+{
+  push_path(path);
+}
 
 void VertexPass::Match(unsigned int value) {
   Graph::vertex_descriptor next = boost::add_vertex(/* vertexProperties, */
@@ -87,12 +112,15 @@ VertexPass::const_iterator VertexPass::end(void) const {
 
 EdgePass::EdgePass(Graph * const pGraph,
                    VertexPass * const pVertices,
-                   Path const & arrayBase,
+                   Path const & parentsRoot,
                    Path const & id) :
-  MatchingHandler(arrayBase, id),
   _pGraph(pGraph),
   _pVertices(pVertices),
-  _currentVertex(pVertices->begin()) {}
+  _currentVertex(pVertices->begin())
+{
+  push_path(parentsRoot);
+  push_path(id);
+}
 
 void EdgePass::Match(unsigned int value) {
   boost::add_edge(_pVertices->lookup(value), *_currentVertex,

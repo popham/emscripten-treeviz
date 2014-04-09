@@ -10,30 +10,36 @@
 #include "matching.hpp"
 
 /*
- * Match the path to a key with unsigned int value.  Upon finding a match
- * `Match` handler is called.  No error results if no match is found.
+ * From a JSON array root, match the path to a key with unsigned int value.
+ * Upon finding a match, the `Match` handler is called.  No error results if a
+ * match is not found.
  *
- * base : Path to a JSON array that contains parents of a vertex.
- * path : Path from `base` to a JSON leaf identifying a vertex.
+ * To match data within a nested array, call `push_path` to locate the nested
+ * array and then `push_path` to locate the data within the array--however many
+ * paths may be `push_path`'d as needed to match deeply nested data.
  */
 class MatchingHandler : public rapidjson::BaseReaderHandler<> {
+  typedef std::vector<Matcher> Matchers;
 public:
-  MatchingHandler(Path const & base, Path const & path);
+  MatchingHandler(void);
+  void push_path(Path const &);
 
+  void StartArray(void);
+  void EndArray(rapidjson::SizeType);
   void StartObject(void);
+  void EndObject(rapidjson::SizeType);
   void String(Ch const * pValue, rapidjson::SizeType length, bool isCopy);
   void Uint(unsigned int value);
-  void EndObject(rapidjson::SizeType);
 
   virtual void Match(unsigned int value)=0;
   virtual void EndRoot(void) {}
 
   bool parse(Stream & source);
-  std::string status(void) const;
+  bool isMatch(void) const;
 
 private:
-  Matcher _base;
-  Matcher _path;
+  Matchers _matchers;
+  int _currentMatcher;
   bool _isKeyNext;
 };
 
@@ -45,8 +51,8 @@ public:
   typedef VertexOrder::const_iterator const_iterator;
 
   VertexPass(Graph * const pGraph,
-             Path const & base,
              Path const & path);
+
   virtual void Match(unsigned int value);
 
   const Graph::vertex_descriptor lookup(unsigned int id);

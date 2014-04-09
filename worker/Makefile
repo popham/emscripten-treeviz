@@ -1,13 +1,15 @@
 ROOT = /home/popham/linode/emscripten-treeviz
 include $(ROOT)/Makefile.inc
 
+LIB_MEMBERS = accept bound_buffer builder command matching response treeish
+
 lib: $(LIBS)/libworker.a
 
-$(LIBS)/libworker.a: accept.o bound_buffer.o builder.o command.o matching.o response.o treeish.o | $(LIBS)
+$(LIBS)/libworker.a: $(addsuffix .o,$(LIB_MEMBERS)) | $(LIBS)
 	$(ARCHIVE) $(LIBS)/libworker.a $^
 
-js3:
-	~/emscripten/emcc -O3 accept.cpp builder.cpp command.cpp treeish.cpp response.cpp -o main.js -std=c++11 -s BUILD_AS_WORKER=1 -s EXPORTED_FUNCTIONS="['_accept']" --closure 1 --js-library request.js
+worker:
+	$(EMCC_WORKER) $(addsuffix .cpp,$(LIB_MEMBERS)) -s EXPORTED_FUNCTIONS="['_accept']" --js-library request.js -o main.js 
 
 test: test_subdirs
 

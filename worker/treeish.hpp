@@ -39,7 +39,11 @@ typedef boost::adjacency_list<
  * "someParentArray"--use an empty `parentId` path in such a case.
  */
 class Treeish {
+  typedef boost::graph_traits<Graph>::vertices_size_type v_size;
 public:
+  typedef boost::graph_traits<Graph>::vertex_iterator VIterator;
+  typedef boost::graph_traits<Graph>::edge_iterator EIterator;
+
   Treeish(void);
 
   void inject(char const * const json);
@@ -51,6 +55,13 @@ public:
   void stop(void);
 
   void clear(void);
+  VIterator vBegin(void) const;
+  VIterator vEnd(void) const;
+  EIterator eBegin(void) const;
+  EIterator eEnd(void) const;
+
+  v_size nVertices(void) const;
+  v_size nEdges(void) const;
 
 private:
   Graph _graph;

@@ -13,14 +13,11 @@
 #include <worker/request.hpp>
 #include <worker/response.hpp>
 
-//char const * const vBaseRaw[] = {};
 char const * const vPathRaw[] = {static_cast<char const * const>("id")};
-//char const * const eBaseRaw[] = {};
 char const * const ePathRaw[] = {static_cast<char const * const>("parents")};
-const Path vertexBase(0, 0);
 const Path vertexPath(&vPathRaw[0], 1);
-const Path parentsBase(0, 0);
-const Path parentsPath(&ePathRaw[0], 1);
+const Path parentsBase(&ePathRaw[0], 1);
+const Path parentsPath(0, 0);
 
 void trigger(std::string const & data) {
   accept(data.c_str(), data.length());

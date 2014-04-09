@@ -16,20 +16,18 @@ private:
   unsigned int _length;
 };
 
-// Matches don't cross array boundaries.
-// Accommodate match from some root.
+// Matches don't cross array boundaries.  A depth of zero therefore implies
+// array context and nonzero depth implies object context.
 class Matcher {
 public:
   Matcher(Path const & soughtPath);
 
+  // Return post-operation depths.
   unsigned int push(std::string const & key);
   unsigned int pop(void);
+  unsigned int depth(void);
 
-  // Wild card semantics for any paths deeper than the sought path.
   bool isMatch(void) const;
-  // Non-wild card semantics.
-  bool isExactMatch(void) const;
-  std::string status(void) const;
 
 private:
   Path const & _soughtPath;
