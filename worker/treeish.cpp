@@ -1,5 +1,6 @@
 #include "treeish.hpp"
 
+#include "layout.hpp"
 #include "stream.hpp"
 #include "bound_buffer.hpp"
 #include "builder.hpp"
@@ -10,8 +11,7 @@ Treeish::Treeish(void) : _graph() {}
 
 void Treeish::inject(char const * const json) {
   Stream is(const_cast<char * const>(json));
-  char const * const vPath[] = {static_cast<char const * const>("id")};
-  VertexPass vp(&_graph, Path(&vPath[0], 1));
+  VertexPass vp(&_graph, vertexBase, vertexPath);
   if (!vp.parse(is)) {
     _graph.clear();
     response::error("Serialization of vertex data to data structure failed");
@@ -19,7 +19,7 @@ void Treeish::inject(char const * const json) {
 
   is = Stream(const_cast<char * const>(json));
   char const * const ePath[] = {static_cast<char const * const>("parents")};
-  EdgePass ep(&_graph, &vp, Path(&ePath[0],1), Path(0,0));
+  EdgePass ep(&_graph, &vp, parentsBase, parentsPath);
   if (!ep.parse(is)) {
     _graph.clear();
     response::error("Serialization of edge data to data structure failed");

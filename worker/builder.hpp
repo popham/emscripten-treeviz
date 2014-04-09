@@ -13,13 +13,12 @@
  * Match the path to a key with unsigned int value.  Upon finding a match
  * `Match` handler is called.  No error results if no match is found.
  *
- * arrayBase : Path to a JSON array that contains parents of a vertex.
- * id : Path from `arrayBase` to a JSON leaf identifying a vertex.
+ * base : Path to a JSON array that contains parents of a vertex.
+ * path : Path from `base` to a JSON leaf identifying a vertex.
  */
 class MatchingHandler : public rapidjson::BaseReaderHandler<> {
 public:
-  MatchingHandler(Path const & id);
-  MatchingHandler(Path const & arrayBase, Path const & id);
+  MatchingHandler(Path const & base, Path const & path);
 
   void StartObject(void);
   void String(Ch const * pValue, rapidjson::SizeType length, bool isCopy);
@@ -33,8 +32,8 @@ public:
   std::string status(void) const;
 
 private:
-  Matcher _arrayBase;
-  Matcher _id;
+  Matcher _base;
+  Matcher _path;
   bool _isKeyNext;
 };
 
@@ -45,7 +44,9 @@ class VertexPass : public MatchingHandler {
 public:
   typedef VertexOrder::const_iterator const_iterator;
 
-  VertexPass(Graph * const pGraph, Path const & id);
+  VertexPass(Graph * const pGraph,
+             Path const & base,
+             Path const & path);
   virtual void Match(unsigned int value);
 
   const Graph::vertex_descriptor lookup(unsigned int id);
@@ -62,8 +63,8 @@ class EdgePass : public MatchingHandler {
 public:
   EdgePass(Graph * const pGraph,
            VertexPass * const pVertices,
-           Path const & arrayBase,
-           Path const & id);
+           Path const & base,
+           Path const & path);
   virtual void Match(unsigned int value);
   virtual void EndRoot(void);
 

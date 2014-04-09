@@ -2,14 +2,10 @@
 
 #include "layout.hpp"
 
-MatchingHandler::MatchingHandler(Path const & id) :
-  _arrayBase(Path::empty),
-  _id(id),
-  _isKeyNext(false) {}
-
-MatchingHandler::MatchingHandler(Path const & arrayBase, Path const & id) :
-  _arrayBase(arrayBase),
-  _id(id),
+MatchingHandler::MatchingHandler(Path const & base,
+                                 Path const & path) :
+  _base(base),
+  _path(path),
   _isKeyNext(false) {}
 
 void MatchingHandler::StartObject(void) {
@@ -24,19 +20,19 @@ void MatchingHandler::String(Ch const * pValue,
   // We only care about string keys since we're looking for unsigned int values.
   if (_isKeyNext) {
     _isKeyNext = false;
-    _arrayBase.push(value);
+    _base.push(value);
 
     // Only bother matching the id path once the base path has been matched.
     // The two paths are disjoint.
-    if (_arrayBase.isMatch() && !_arrayBase.isExactMatch()) {
-      _id.push(value);
+    if (_base.isMatch() && !_base.isExactMatch()) {
+      _path.push(value);
     }
   }
 }
 
 void MatchingHandler::Uint(unsigned int value) {
   // Exact match to avoid erroneous returns given a degenerate path.
-  if (_arrayBase.isMatch() && _id.isExactMatch()) {
+  if (_base.isMatch() && _path.isExactMatch()) {
     Match(value);
   }
   _isKeyNext = true;
@@ -45,11 +41,11 @@ void MatchingHandler::Uint(unsigned int value) {
 void MatchingHandler::EndObject(rapidjson::SizeType size) {
   _isKeyNext = false; // [{}, "asdf", ...] implies a key of "asdf" without this.
 
-  if (_arrayBase.isMatch() && !_arrayBase.isExactMatch()) {
-    _id.pop();
+  if (_base.isMatch() && !_base.isExactMatch()) {
+    _path.pop();
   }
 
-  if (_arrayBase.pop() == 0) {
+  if (_base.pop() == 0) {
     EndRoot();
   }
 }
@@ -61,11 +57,13 @@ bool MatchingHandler::parse(Stream & source) {
 }
 
 std::string MatchingHandler::status(void) const {
-  return "_id:\n" + _id.status() + "\n_arrayBase:\n" + _arrayBase.status();
+  return "_path:\n" + _path.status() + "\n_base:\n" + _base.status();
 }
 
-VertexPass::VertexPass(Graph * const pGraph, Path const & id) : 
-  MatchingHandler(id),
+VertexPass::VertexPass(Graph * const pGraph,
+                       Path const & base,
+                       Path const & path) :
+  MatchingHandler(base, path),
   _pGraph(pGraph) {}
 
 void VertexPass::Match(unsigned int value) {

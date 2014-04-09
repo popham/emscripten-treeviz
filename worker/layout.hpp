@@ -2,7 +2,7 @@
 
 #include "matching.hpp"
 
-const Path idRoot;
-const Path idPath;
-const Path parentRoot;
-const Path parentPath;
+extern const Path vertexBase;
+extern const Path vertexPath;
+extern const Path parentsBase;
+extern const Path parentsPath;
