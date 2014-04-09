@@ -1,4 +1,4 @@
-define(['cujo/when', './wire'], function (when, wire) {
+define(['when', './wire'], function (when, wire) {
     var exports = {};
 
     // Load from (compile -> js!...) to avoid repetition?

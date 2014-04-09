@@ -2,7 +2,8 @@
     curl.config({
         baseUrl: '..',
         paths : {
-            curl : 'node_modules/curl/src/curl'
+            curl : 'node_modules/curl/src/curl',
+            when : 'node_modules/when/when.js'
         },
         plugins: {
             js :  { prefetch : false },
@@ -10,13 +11,10 @@
         }
     });
 
-    curl(['parent/command']).then(start, fail);
+    curl(['owner/treeish']).then(start, fail);
 
-    function start(command) {
-        var worker = new Worker('/child/dag.js');
-        worker.onmessage = function (event) {
-            var svg = event.data;
-
+    function start(treeish) {
+/*
             if (svg.length === 0) {
                 var parser = new DOMParser();
                 var fragment = parser.parseFromString(svg, 'application/xml');
@@ -26,11 +24,18 @@
                 worker.terminate();
             }
         };
-        worker.postMessage(command.load('tree1.js'));
-        worker.postMessage(command.scale(30,45));
-        worker.postMessage(command.set_physics());
-        worker.postMessage(command.iterate(5));
-        worker.postMessage(command.stop());
+*/
+        var layout = new treeish.Layout('/worker/test/deep.js');
+        layout.load('/worker/test/deep.json')
+            .then(treeish.scale(30,50))
+            .then(treeish.setPhysics())
+            .then(treeish.iterate(5))
+            .then(treeish.installSvg(node))
+            .then(treeish.iterate(5))
+            .then(treeish.installSvg(node))
+            .then(treeish.stop())
+            .done(function () {console.log('ok')},
+                  function () {console.log('ng')});
     }
 
     function fail(ex) {

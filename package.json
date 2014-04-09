@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/popham/emscripten-treeviz",
   "devDependencies": {
-    "curl": "git+https://github.com/cujojs/curl.git"
+    "curl": "git+https://github.com/cujojs/curl.git",
+    "when": "git+https://github.com/cujojs/when.git"
   }
 }
