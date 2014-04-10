@@ -9,6 +9,6 @@ struct bound_buffer {
 
 extern "C" void init_bound_buffer(bound_buffer * target,
                                   char * first,
-                                  unsigned int length);
+                                  int length);
 extern "C" unsigned int sizeof_bound_buffer(void);
 void dealloc_bound_buffer(bound_buffer * p);

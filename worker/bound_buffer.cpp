@@ -4,7 +4,7 @@
 
 extern "C" void init_bound_buffer(bound_buffer * target,
                                   char * first,
-                                  unsigned int length) {
+                                  int length) {
   target->first = first;
   target->length = length;
 }

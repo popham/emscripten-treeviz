@@ -2,7 +2,7 @@
 mergeInto(LibraryManager.library, {
     /**
      * Synchronously grab data and leak it to the heap.  The caller is
-     * responsible for deallocating the buffer, e.g. free(bb->first).
+     * responsible for deallocating the buffer, e.g. `dealloc_bound_buffer`.
      */
     get : function (target, url) {
         var url_ = Pointer_stringify(url);
@@ -19,16 +19,16 @@ mergeInto(LibraryManager.library, {
                 // Vacuous on errors
                 byteArray = new Uint8Array("");
             }
-        }
+        };
 
         http.onerror = function (e) {
             byteArray = new Uint8Array("");
-        }
+        };
 
         http.send(null);
         var length = byteArray.length;
         var buffer = _malloc(length);
         HEAPU8.set(byteArray, buffer);
-        init_bound_buffer(target, buffer, length);
+        _init_bound_buffer(target, buffer, length);
     }
 });
