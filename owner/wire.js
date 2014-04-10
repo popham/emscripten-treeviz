@@ -1,11 +1,11 @@
-define(['lodash'], function (_) {
+define(['lodash', 'js!text_encoding/encoding.js'], function (_) {
     var exports = {};
 
     // Match emscripten's worker interface
     // Emscripten uses array indices for `callbackId`, so negative values will
     // avoid name collisions.
     var stub = {
-        funcName : 'listen',
+        funcName : 'accept',
         callbackId : -1 
     };
 
@@ -14,14 +14,16 @@ define(['lodash'], function (_) {
     exports.serialize = function (payload) {
         payload = _.merge({ data : payload }, stub);
 
-        return JSON.stringify(payload);
+        return payload;
     };
 
     exports.unserialize = function(message) {
         // Remove Emscripten wire protocol additions from message.
-        message = JSON.parse(message).data;
-        message.command = parseInt(message.command);
+        message = TextDecoder('utf-8').decode(message.data);
+        message = JSON.parse(message);
 
         return message;
     };
+
+    return exports;
 });

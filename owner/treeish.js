@@ -19,8 +19,7 @@ define(['when', './wire'], function (when, wire) {
 
     function vacuousResolver(deferred, okValue) {
         return function (message) {
-            message = JSON.parse(message);
-            if (message['error']) {
+            if ('error' in message) {
                 deferred.resolver.reject(message.error);
             } else {
                 deferred.resolver.resolve(okValue);
@@ -122,7 +121,7 @@ define(['when', './wire'], function (when, wire) {
             var deferred = when.defer();
 
             layout.setResolver(function (message) {
-                if (message['error']) {
+                if ('error' in message) {
                     deferred.resolver.reject(message.error);
                 } else {
                     parent.innerHTML = message.fragment;
@@ -146,9 +145,9 @@ define(['when', './wire'], function (when, wire) {
         this.resolverRegister = undefined;
 
         this.worker.onmessage = function (event) {
-            var message = wire.unserialize(event.message);
+            var message = wire.unserialize(event.data);
             this.resolverRegister(message);
-        };
+        }.bind(this);
     };
 
     exports.Layout.prototype.setResolver = function (resolver) {
