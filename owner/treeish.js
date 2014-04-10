@@ -24,7 +24,7 @@ define(['when', './wire'], function (when, wire) {
             } else {
                 deferred.resolver.resolve(okValue);
             }
-        }
+        };
     }
 
     exports.load = function (url) {
@@ -43,7 +43,7 @@ define(['when', './wire'], function (when, wire) {
             command : Command.LOAD,
             dataSource : resourceUrl
         });
-    };
+    }
 
     exports.setPhysics = function () {
         return function (layout) {
@@ -60,7 +60,7 @@ define(['when', './wire'], function (when, wire) {
         return wire.serialize({
             command : Command.SET_PHYSICS
         });
-    };
+    }
 
     exports.scale = function (depth, breadth) {
         return function (layout) {
@@ -79,7 +79,7 @@ define(['when', './wire'], function (when, wire) {
             depth : depth,
             breadth : breadth
         });
-    };
+    }
 
     exports.iterate = function (count) {
         return function (layout) {
@@ -97,7 +97,7 @@ define(['when', './wire'], function (when, wire) {
             command : Command.ITERATE,
             count : count
         });
-    };
+    }
 
     exports.stop = function () {
         return function (layout) {
@@ -107,14 +107,14 @@ define(['when', './wire'], function (when, wire) {
             layout.do(iterateMessage(count));
 
             return deferred.promise;
-        }
+        };
     };
 
     function stopMessage() {
         return wire.serialize({
             command : Command.STOP
         });
-    };
+    }
 
     exports.installSvg = function (parent) {
         return function (layout) {

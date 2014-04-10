@@ -1,4 +1,4 @@
-define(['lodash', 'js!text_encoding/encoding.js'], function (_) {
+define(['lodash', 'js!text-encoding'], function (_, enc) {
     var exports = {};
 
     // Match emscripten's worker interface
@@ -6,23 +6,23 @@ define(['lodash', 'js!text_encoding/encoding.js'], function (_) {
     // avoid name collisions.
     var stub = {
         funcName : 'accept',
-        callbackId : -1 
+        callbackId : -1
     };
 
     // use stringify instead <del>Simulate a read from the HEAPU8.  Verbatim of the `processJSString`
     // implementation from `runtime.js`.
     exports.serialize = function (payload) {
-        payload = _.merge({ data : payload }, stub);
+        payload = JSON.stringify(payload);
+        payload = TextEncoder('utf-8').encode(payload);
 
-        return payload;
+        return _.merge({ data : payload }, stub);
     };
 
     exports.unserialize = function(message) {
         // Remove Emscripten wire protocol additions from message.
         message = TextDecoder('utf-8').decode(message.data);
-        message = JSON.parse(message);
 
-        return message;
+        return JSON.parse(message);
     };
 
     return exports;
