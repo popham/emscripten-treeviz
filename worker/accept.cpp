@@ -8,9 +8,7 @@ Treeish treeish;
 void accept(char const * const data, int size) {
   Stream source(const_cast<char * const>(data));
   TreeishDispatcher dispatcher;
-  if (!dispatcher.parse(source, &treeish)) {
-    response::error("Command dispatching failed");
-  }
+  dispatcher.parse(source, &treeish);
 }
 
 TreeishDispatcher::TreeishDispatcher(void) : _pContext(0) {}
@@ -23,6 +21,7 @@ bool TreeishDispatcher::parse(Stream const & source, Treeish * pTreeish) {
   // Figure out what command needs calling.
   _pContext = &pass1;
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, *this)) {
+    response::error("Failed to determine which command to evaluate");
     return false;
   }
 
@@ -31,6 +30,7 @@ bool TreeishDispatcher::parse(Stream const & source, Treeish * pTreeish) {
   _pContext = command::WireCommand::create(pass1.type, pTreeish);
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, *this)) {
     delete _pContext;
+    response::error("Failed to bind parameters for command evaluation");
     return false;
   }
 
