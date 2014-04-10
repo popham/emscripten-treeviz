@@ -3,7 +3,7 @@
         baseUrl: '../..',
         paths : {
             curl : 'node_modules/curl/src/curl',
-            text_encoding : 'node_modules/text-encoding/lib'
+            'text-encoding' : 'node_modules/text-encoding/lib/encoding'
         },
         packages : [
             {
@@ -14,7 +14,7 @@
             {
                 name : 'when',
                 location : 'node_modules/when',
-                main: 'when'
+                main : 'when'
             }
         ],
         plugins: {
@@ -48,8 +48,8 @@
             .then(treeish.iterate(5))
             .then(treeish.installSvg(target))
             .then(treeish.stop())
-            .done(function () {console.log('huzzah')},
-                  function (e) {console.log(e)});
+            .done(function () {console.log('huzzah');},
+                  function (e) {console.log(e);});
     }
 
     function fail(ex) {
