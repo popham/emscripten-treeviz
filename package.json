@@ -27,6 +27,7 @@
     "curl": "git+https://github.com/cujojs/curl.git",
     "when": "git+https://github.com/cujojs/when.git",
     "lodash-amd": "^2.4.1",
-    "text-encoding": "0.0.0"
+    "text-encoding": "0.0.0",
+    "intern": "^1.6.1"
   }
 }
