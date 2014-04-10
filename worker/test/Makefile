@@ -18,11 +18,11 @@ flat.js: sax/flat.cpp sax/flat_path.cpp sax.cpp | build_libs
 deep: sax/deep.cpp sax/deep_path.cpp sax.cpp | build_libs
 	$(CPP) -L $(LIBS) $^ -l worker -l owner -o deep
 
-deep.js: deep
+deep.js: #deep
 	$(shell ./deep > ./deep.json)
 	$(EMCC_WORKER) $(addprefix ../,$(WORKER_LIB)) sax/deep_path.cpp -s EXPORTED_FUNCTIONS="['_accept']" --js-library ../request.js -o deep.js
 
 clean: clean_subdirs
 	rm -f treeish
-	rm -f flat flat.js flat.json
-	rm -f deep deep.js deep.json
+	rm -f flat flat.js flat.js.map flat.json
+	rm -f deep deep.js deep.js.map deep.json

@@ -1,4 +1,5 @@
 INCLUDES = -I /home/popham/include/boost_1_55_0/ -I $(ROOT) -I $(ROOT)/rapidjson/include/ -I $(ROOT)/rapidxml/include/ -I $(ROOT)/lest/include/
+EROOT = /home/popham/emscripten
 LIBS = $(ROOT)/include
 SUBDIRS := $(wildcard */.)
 
@@ -9,9 +10,9 @@ CPP = clang++ -std=c++11 $(INCLUDES)
 endif
 
 ifdef DEBUG
-EMCC_WORKER = /home/popham/emscripten/emcc -O0 -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES)
+EMCC_WORKER = /home/popham/emscripten/emcc -O0 -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES) -I $(EROOT)/include
 else
-EMCC_WORKER = /home/popham/emscripten/emcc -O3 --closure 1 -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES)
+EMCC_WORKER = /home/popham/emscripten/emcc -O3 --closure 1 -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES) -I $(EROOT)/include
 endif
 
 ARCHIVE = ar rvs
