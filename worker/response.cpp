@@ -5,29 +5,29 @@
 namespace response {
 
   static const std::string VOID_RESPONSE =
-    "{\"response\":" + std::to_string((int)Response::VOID) + "}";
+    R"({"response":)" + std::to_string((int)Response::VOID) + "}";
 
   static const std::string CLEAN_RESPONSE =
-    "{\"response\":" + std::to_string((int)Response::CLEAN) + "}";
+    R"({"response":)" + std::to_string((int)Response::CLEAN) + "}";
 
   void respond(const Response response,
                char const * const message_key,
                char const * const message) {
-    std::string r = "{\"response\":";
+    std::string r = R"({"response":)";
     r += std::to_string((int)response);
-    r += ",\"";
+    r += R"(,")";
     r += message_key;
-    r += "\":\"";
+    r += R"(":")";
     r += message;
-    r += "\"}";
+    r += R"("})";
 
     emscripten_worker_respond_provisionally(r.c_str(), r.length());
   }
 
   void error(char const * const message) {
-    std::string e = "{\"error\":\"";
+    std::string e = R"({"error":")";
     e += message;
-    e += "\"}";
+    e += R"("})";
 
     emscripten_worker_respond_provisionally(e.c_str(), e.length());
   }
