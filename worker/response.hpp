@@ -1,8 +1,8 @@
 #pragma once
 
 extern "C" {
-  extern void emscripten_worker_respond(char const * const, unsigned int);
-  extern void emscripten_worker_respond_provisionally(char const * const, unsigned int);
+  extern void emscripten_worker_respond(char const * const, int);
+  extern void emscripten_worker_respond_provisionally(char const * const, int);
 }
 
 namespace response {

@@ -51,11 +51,11 @@ std::string provisional(boost::format const & data) {
 // buffer responses for tests to validate against
 std::stringstream responses;
 
-extern "C" void emscripten_worker_respond(char const * const data, unsigned int length) {
+extern "C" void emscripten_worker_respond(char const * const data, int length) {
   responses << final(std::string(data, length));
 }
 
-extern "C" void emscripten_worker_respond_provisionally(char const * const data, unsigned int length) {
+extern "C" void emscripten_worker_respond_provisionally(char const * const data, int length) {
   responses << provisional(std::string(data, length));
 }
 

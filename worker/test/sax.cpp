@@ -17,11 +17,11 @@ extern "C" void get(bound_buffer * target, char const * const) {}
 // buffer responses for tests to validate against
 std::stringstream responses;
 
-extern "C" void emscripten_worker_respond(char const * const data, unsigned int length) {
+extern "C" void emscripten_worker_respond(char const * const data, int length) {
   responses << std::string(data, length);
 }
 
-extern "C" void emscripten_worker_respond_provisionally(char const * const data, unsigned int length) {
+extern "C" void emscripten_worker_respond_provisionally(char const * const data, int length) {
   responses << std::string(data, length);
 }
 
