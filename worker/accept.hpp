@@ -31,12 +31,12 @@ public:
 
 private:
   command::HandlerStrategy * _pContext;
-  bool _isKeyNext;
+  bool _isOdd;
   std::string _key;
 
   template <typename T>
-  void _handleValue(T value) {
+  void _nonKey(T value) {
     _pContext->bind(_key, value);
-    _isKeyNext = true;
+    _isOdd = true;
   }
 };
