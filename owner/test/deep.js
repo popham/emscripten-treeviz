@@ -1,10 +1,22 @@
 (function () {
     curl.config({
-        baseUrl: '..',
+        baseUrl: '../..',
         paths : {
             curl : 'node_modules/curl/src/curl',
-            when : 'node_modules/when/when.js'
+            text_encoding : 'node_modules/text-encoding/lib'
         },
+        packages : [
+            {
+                name : 'lodash',
+                location : 'node_modules/lodash-amd',
+                main : 'main'
+            },
+            {
+                name : 'when',
+                location : 'node_modules/when',
+                main: 'when'
+            }
+        ],
         plugins: {
             js :  { prefetch : false },
             css : { nowait   : true }
@@ -25,17 +37,19 @@
             }
         };
 */
+
+        var target = document.getElementById('target');
         var layout = new treeish.Layout('/worker/test/deep.js');
         layout.load('/worker/test/deep.json')
             .then(treeish.scale(30,50))
             .then(treeish.setPhysics())
             .then(treeish.iterate(5))
-            .then(treeish.installSvg(node))
+            .then(treeish.installSvg(target))
             .then(treeish.iterate(5))
-            .then(treeish.installSvg(node))
+            .then(treeish.installSvg(target))
             .then(treeish.stop())
-            .done(function () {console.log('ok')},
-                  function () {console.log('ng')});
+            .done(function () {console.log('huzzah')},
+                  function (e) {console.log(e)});
     }
 
     function fail(ex) {
