@@ -18,7 +18,7 @@ class TreeishDispatcher : public rapidjson::BaseReaderHandler<> {
 public:
   TreeishDispatcher(void);
 
-  bool parse(Stream const & source, Treeish * pTreeish);
+  bool parse(char const * const source, Treeish * pTreeish);
 
   void String(Ch const * pValue, rapidjson::SizeType length, bool isCopy);
   void Bool(bool b);

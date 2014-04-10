@@ -6,19 +6,18 @@
 Treeish treeish;
 
 void accept(char const * const data, int size) {
-  Stream source(const_cast<char * const>(data));
   TreeishDispatcher dispatcher;
-  dispatcher.parse(source, &treeish);
+  dispatcher.parse(data, &treeish);
 }
 
 TreeishDispatcher::TreeishDispatcher(void) : _pContext(0) {}
 
-bool TreeishDispatcher::parse(Stream const & source, Treeish * pTreeish) {
-  command::WireCommandType pass1;
-  Stream is = source;
+bool TreeishDispatcher::parse(char const * const source, Treeish * pTreeish) {
   rapidjson::Reader reader;
+  Stream is(const_cast<char * const>(source));
 
   // Figure out what command needs calling.
+  command::WireCommandType pass1;
   _pContext = &pass1;
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, *this)) {
     response::error("Failed to determine which command to evaluate");
@@ -26,7 +25,7 @@ bool TreeishDispatcher::parse(Stream const & source, Treeish * pTreeish) {
   }
 
   // Call the command.
-  is = source;
+  is = Stream(const_cast<char * const>(source));
   _pContext = command::WireCommand::create(pass1.type, pTreeish);
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, *this)) {
     delete _pContext;
