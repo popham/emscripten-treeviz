@@ -1,6 +1,6 @@
-INCLUDES = -I /home/popham/include/boost_1_55_0/ -I $(ROOT) -I $(ROOT)/rapidjson/include/ -I $(ROOT)/rapidxml/include/ -I $(ROOT)/lest/include/
+INCLUDES = -I /home/popham/include/boost_1_55_0 -I $(ROOT)/src -I $(ROOT)/rapidjson/include -I $(ROOT)/rapidxml/include -I $(ROOT)/lest/include
 EROOT = /home/popham/emscripten
-LIBS = $(ROOT)/include
+LIBS = $(ROOT)/lib
 SUBDIRS := $(wildcard */.)
 
 ifdef DEBUG

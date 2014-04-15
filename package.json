@@ -23,11 +23,21 @@
     "url": "https://github.com/popham/emscripten-treeviz/issues"
   },
   "homepage": "https://github.com/popham/emscripten-treeviz",
-  "devDependencies": {
-    "curl": "git+https://github.com/cujojs/curl.git",
+  "dependencies": {
+    "curl-amd": "git+https://github.com/cujojs/curl.git",
     "when": "git+https://github.com/cujojs/when.git",
     "lodash-amd": "^2.4.1",
-    "text-encoding": "0.0.0",
-    "intern": "^1.6.1"
+    "text-encoding": "0.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "karma": "^0.12.6",
+    "karma-mocha": "^0.1.3",
+    "karma-chrome-launcher": "^0.1.3",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-spec-reporter": "0.0.12",
+    "karma-curl-amd": "0.0.4",
+    "chai": "^1.9.1"
   }
 }

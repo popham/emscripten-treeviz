@@ -2,8 +2,10 @@ ROOT = /home/popham/linode/emscripten-treeviz
 include $(ROOT)/Makefile.inc
 
 lib:
-	make -C owner/ lib
-	make -C worker/ lib
+	make -C src/owner/ lib
+	make -C src/worker/ lib
+
+.PHONY: lib
 
 test: test_subdirs
 
