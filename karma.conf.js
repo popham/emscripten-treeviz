@@ -8,11 +8,14 @@ module.exports = function(config) {
         frameworks: ['mocha', 'curl-amd'],
         files: [
             { pattern: 'node_modules/**/*.js', watched: false, included: false, served: true },
-            { pattern: 'src/**/*.js', watched: true, included: false, served: true },
+            { pattern: 'src/**/*', watched: true, included: false, served: true },
             { pattern: 'src/**/*.spec.js', watched:true, included: false, served: true },
             'test-main.js'
         ],
-        exclude: [],
+        exclude: [
+            'src/**/*.hpp',
+            'src/**/*.cpp'
+        ],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -21,7 +24,7 @@ module.exports = function(config) {
         reporters: ['spec'],
 
         //browsers: ['Chrome', 'PhantomJS', 'Firefox'],
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
         singleRun: false,
         client: {
             mocha: {
@@ -35,7 +38,7 @@ module.exports = function(config) {
 
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-        logLevel: config.LOG_DEBUG,
+        logLevel: config.LOG_WARN,
 
         // enable / disable watching file and executing tests whenever any file changes
         autoWatch: true
