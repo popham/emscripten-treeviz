@@ -142,7 +142,7 @@ const lest::test interrogate[] =
     EXPECT( dump_responses() == final(sought) );
   },
 
-  "Treeish parses a Scale command and errors out", []
+  "Treeish parses another Scale command and responds Void", []
   {
     trigger(protocol::scale(10,15));
     boost::format sought = boost::format(R"({"response":%s})")
