@@ -4,11 +4,12 @@
 #include "response.hpp"
 
 namespace command {
-  bool WireCommandType::bind(std::string const & name, unsigned int value) {
+  bool WireCommandType::bind(std::string const & name, Value value) {
     if (name == "command") {
-      type = (Command)value;
+      type = static_cast<Command>(boost::any_cast<unsigned int>(value));
       return true;
     }
+
     return false;
   }
 
@@ -31,9 +32,9 @@ namespace command {
     _pTreeish->renderSvg();
   }
 
-  bool Load::bind(std::string const & name, std::string const & value) {
+  bool Load::bind(std::string const & name, Value value) {
     if (name == "dataSource") {
-      _url = value;
+      _url = boost::any_cast<std::string>(value);
       _complete |= 1;
       return true;
     }
@@ -48,14 +49,14 @@ namespace command {
       response::incompleteBindingError("Load");
     }
   }
-
-  bool Scale::bind(std::string const & name, double value) {
+#include <iostream>
+  bool Scale::bind(std::string const & name, Value value) {
     if (name == "breadth") {
-      _breadth = value;
+      _breadth = boost::any_cast<double>(value);
       _complete |= 1;
       return true;
     } else if (name == "depth") {
-      _depth = value;
+      _depth = boost::any_cast<double>(value);
       _complete |= 2;
       return true;
     }
@@ -71,17 +72,17 @@ namespace command {
     }
   }
 
-  /*stub for now: bool SetPhysics::bind(std::string const & name,  value) {
-    
-    }*/
+  bool SetPhysics::bind(std::string const & name, Value value) {
+    return false;
+  }
 
   void SetPhysics::call(void) {
     _pTreeish->setPhysics();
   }
 
-  bool Iterate::bind(std::string const & name, unsigned int value) {
+  bool Iterate::bind(std::string const & name, Value value) {
     if (name == "count") {
-      _count = value;
+      _count = boost::any_cast<unsigned int>(value);
       _complete |= 1;
       return true;
     }

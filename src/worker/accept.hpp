@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <boost/any.hpp>
 #include <rapidjson/reader.h>
 #include "stream.hpp"
 #include "command.hpp"
@@ -34,9 +35,5 @@ private:
   bool _isOdd;
   std::string _key;
 
-  template <typename T>
-  void _nonKey(T value) {
-    _pContext->bind(_key, value);
-    _isOdd = true;
-  }
+  void _nonKey(boost::any value);
 };
