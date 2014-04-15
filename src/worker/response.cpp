@@ -2,6 +2,14 @@
 
 #include <string>
 
+void log_message(char const * const message) {
+  std::string e = R"({"log":")";
+  e += message;
+  e += R"("})";
+
+  emscripten_worker_respond_provisionally(e.c_str(), e.length());
+}
+
 namespace response {
 
   static const std::string VOID_RESPONSE =

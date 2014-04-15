@@ -3,6 +3,7 @@
 extern "C" {
   extern void emscripten_worker_respond(char const * const, int);
   extern void emscripten_worker_respond_provisionally(char const * const, int);
+  extern void log_message(char const * const message);
 }
 
 namespace response {
