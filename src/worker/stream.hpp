@@ -2,4 +2,4 @@
 
 #include <rapidjson/rapidjson.h>
 
-typedef rapidjson::InsituStringStream Stream;
+typedef rapidjson::StringStream Stream;
