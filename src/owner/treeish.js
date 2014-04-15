@@ -19,7 +19,9 @@ define(['when', './wire'], function (when, wire) {
 
     function vacuousResolver(deferred, okValue) {
         return function (message) {
-            if ('error' in message) {
+            if ('log' in message) {
+                console.log(message);
+            } else if ('error' in message) {
                 deferred.resolver.reject(message.error);
             } else {
                 deferred.resolver.resolve(okValue);
@@ -116,12 +118,14 @@ define(['when', './wire'], function (when, wire) {
         });
     }
 
-    exports.installSvg = function (parent) {
+    exports.injectSvg = function (parent) {
         return function (layout) {
             var deferred = when.defer();
 
             layout.setResolver(function (message) {
-                if ('error' in message) {
+                if ('log' in message) {
+                    console.log(message);
+                } else if ('error' in message) {
                     deferred.resolver.reject(message.error);
                 } else {
                     parent.innerHTML = message.fragment;
@@ -145,14 +149,17 @@ define(['when', './wire'], function (when, wire) {
         this.resolverRegister = undefined;
 
         this.worker.onmessage = function (event) {
-            var message = wire.unserialize(event.data);
-            this.resolverRegister(message);
+            this.resolverRegister(wire.unserialize(event.data));
         }.bind(this);
     };
 
     exports.Layout.prototype.setResolver = function (resolver) {
         this.resolverRegister = resolver;
     };
+
+    exports.Layout.prototype.getResolver = function () {
+        return this.resolverRegister;
+    }
 
     exports.Layout.prototype.do = function (command) {
         this.worker.postMessage(command);
@@ -161,6 +168,10 @@ define(['when', './wire'], function (when, wire) {
     exports.Layout.prototype.load = function (url) {
         return exports.load(url)(this);
     };
+
+    exports.Layout.prototype.injectSvg = function (node) {
+        return exports.injectSvg(node)(this);
+    }
 
     return exports;
 });

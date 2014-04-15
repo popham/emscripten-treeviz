@@ -1,4 +1,4 @@
-define(['chai'], function (chai) {
+define(['chai', '../treeish'], function (chai, treeish) {
 var assert = chai.assert;
 
 /*
@@ -13,68 +13,126 @@ var assert = chai.assert;
         };
 */
 
-    describe("Deep tree worker", function () {
-        var stub = {};
-        stub.innerHTML = "";
+    describe("Deep tree", function () {
         var layout;
-        var promise;
 
         it("should instantiate", function () {
-            layout = new treeish.Layout('/base/worker/test/deep.js');
+            layout = new treeish.Layout('/base/src/worker/test/deep.js');
             assert.ok(layout);
         });
 
-        it("should load", function () {
-            promise = layout.load('/base/worker/test/deep.json');
-            assert.equal(true, false);
-            // interrogate
+        function bfStub() {
+            var inner = { innerHTML: "" };
+            return {
+                before: inner,
+                after:  inner
+            };
+        }
+
+        function assertNoOp(stub) {
+            assert.deepEqual(stub.before, stub.after);
+        }
+
+        function assertOp(stub) {
+            assert.notDeepEqual(stub.before, stub.after);
+        }
+
+        it("should load JSON data", function (done) {
+            var states = bfStub();
+
+            layout.injectSvg(states.before)
+                .tap(treeish.load('/base/src/worker/test/deep.json'))
+                .tap(treeish.injectSvg(states.after))
+                .done(
+                    function () {
+                        assertOp(states);
+                        done();
+                    },
+                    function (e) { throw new Error(e); });
         });
 
-        it("should scale", function () {
-            promise.then(treeish.scale(30,50));
-            assert.equal(true, false);
+        it("should scale", function (done) {
+            var states = bfStub();
+
+            layout.injectSvg(states.before)
+                .tap(treeish.scale(30,50))
+                .tap(treeish.injectSvg(states.after))
+                .done(
+                    function () {
+                        assertOp(states);
+                        done();
+                    },
+                    function (e) { throw new Error(e); });
         });
 
-        it("should take new physical parameters", function () {
-            promise.then(treeish.setPhysics());
-            assert.equal(true, false);
+        it("should take new physical parameters without changing state", function (done) {
+            var states = bfStub();
+
+            layout.injectSvg(states.before)
+                .tap(treeish.setPhysics())
+                .tap(treeish.injectSvg(states.after))
+                .done(
+                    function () {
+                        assertNoOp(states);
+                        done();
+                    },
+                    function (e) { throw new Error(e); });
         });
 
-        it("should iterate to a better configuration", function () {
-            promise.then(treeish.iterate(5));
-            assert.equal(true, false);
+        it("should iterate to another configuration", function (done) {
+            var states = bfStub();
+
+            layout.injectSvg(states.before)
+                .tap(treeish.iterate(5))
+                .tap(treeish.injectSvg(states.after))
+                .done(
+                    function () {
+                        assertOp(states);
+                        done();
+                    },
+                    function (e) { throw new Error(e) });
         });
 
-        it("should retrieve an SVG representation and install it to a node's innerHTML", function () {
-            promise.then(treeish.installSvg(stub));
-            assert.equal(true, false);
+        it("should retrieve an SVG representation and install it to a node's innerHTML", function (done) {
+            var stub = {};
+            stub.innerHTML = "";
+
+            layout.injectSvg(stub)
+                .done(
+                    function () {
+                        assert.notEqual(stub.innerHTML, "");
+                        done();
+                    },
+                    function (e) { throw new Error(e); })
         });
 
-        it("should iterate to a still better configuration", function () {
-            promise.then(treeish.iterate(5));
-            assert.equal(true, false);
+        it("should iterate to a yet another configuration", function (done) {
+            var states = bfStub();
+
+            layout.injectSvg(states.before)
+                .tap(treeish.iterate(5))
+                .tap(treeish.injectSvg(states.after))
+                .done(
+                    function () {
+                        assertOp(states);
+                        done();
+                    },
+                    function (e) { throw new Error(e) });
         });
 
-        it("should retrieve a new SVG representation and install it to a node's innerHTML", function () {
-            promise.then(treeish.installSvg(stub));
-            assert.equal(true, false);
-        })
+        it("should become vacuous upon receiving a stop command", function (done) {
+            var states = bfStub();
 
-        it("should terminate", function () {
-            promise.then(treeish.stop());
-            assert.equal(true, false);
+            layout.injectSvg(states.before)
+                .tap(treeish.stop())
+                .tap(treeish.injectSvg(states.after))
+                .done(
+                    function () {
+                        assertOp(states);
+                        assert.equal(states.after.innerHTML, "");
+                        done();
+                    },
+                    function (e) { throw new Error(e) });
         });
-
-        it("should retrieve a vacuous SVG representatino after stopping", function () {
-            promise.then(treeish.installSvg(stub));
-            assert.equal(true, false);
-        });
-
-        it("should be in a non-error state after the preceding sequence", function () {
-            // Spies promise library for cases like this?
-            promise.done(function () {console.log('huzzah');},
-                         function (e) {console.log(e);});
-            assert.equal(true, false);
-        });;
     });
 });
