@@ -23,7 +23,7 @@ define(['when', './wire'], function (when, wire) {
                 console.log(message);
             } else if ('error' in message) {
                 deferred.resolver.reject(message.error);
-            } else {
+            } else if ('response' in message) {
                 deferred.resolver.resolve(okValue);
             }
         };
@@ -127,7 +127,7 @@ define(['when', './wire'], function (when, wire) {
                     console.log(message);
                 } else if ('error' in message) {
                     deferred.resolver.reject(message.error);
-                } else {
+                } else if ('response' in message) {
                     parent.innerHTML = message.fragment;
                     deferred.resolver.resolve(layout);
                 }
