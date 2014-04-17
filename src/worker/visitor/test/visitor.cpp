@@ -3,32 +3,32 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <lest/lest.hpp>
 #include "../grid.hpp"
+#include <iostream>
 
 Graph g;
-VertexMap vertices;
-PositionMap grid;
-#include <iostream>
+Color * pColors=0;
+Slots * pSlots=0;
+
 lest::test tests[] =
 {
   "The GridVisitor pass yields the sought hypothetical positions", []
   {
-    g.clear();
-    install(g, vertices, grid);
-    ColorMap colors(vertices.size());
-    boost::depth_first_visit(g, vertices[0], GridVisitor(), colors);
+    // Build data structure. For testing, add the graph's root first, otherwise
+    // find the graph's root and provide its descriptor instead of 0.
+    install(g);
+    pColors = new Color[boost::num_vertices(g)];
+    pSlots = new Slots[boost::num_vertices(g)];
+    computeHypothetical(g, 0, pSlots, pColors);
+    std::vector<Slots> sought = slots();
 
-    for (auto ps : grid) {
-      auto descriptor = vertices[ps.first];
-std::cout << "sought (" << typeid(ps.second).name() << "): " << ps.second << std::endl;
-std::cout << "result full (" << typeid(g[descriptor].positions).name() << "): " << g[descriptor].positions << std::endl;
-std::cout << "result first: " << std::endl;
-
-      EXPECT(g[descriptor].positions == ps.second);
+    EXPECT(sought.size() == boost::num_vertices(g));
+    for (unsigned int i=0; i<sought.size(); ++i) {
+      EXPECT(sought[i] == pSlots[i]);
     }
   }
-    };
+};
 
 int main(void)
 {
-    return lest::run(tests);
+  return lest::run(tests);
 }
