@@ -1,5 +1,6 @@
 #include "visitor.hpp"
 
+#include <algorithm>
 #include <boost/graph/depth_first_search.hpp>
 #include <lest/lest.hpp>
 #include "../grid.hpp"
@@ -21,9 +22,7 @@ lest::test tests[] =
     std::vector<Slots> sought = slots();
 
     EXPECT(sought.size() == boost::num_vertices(g));
-    for (unsigned int i=0; i<sought.size(); ++i) {
-      EXPECT(sought[i] == pSlots[i]);
-    }
+    EXPECT(std::equal(sought.begin(), sought.end(), pSlots));
   }
 };
 
