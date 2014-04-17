@@ -2,4 +2,4 @@
 
 #include "bound_buffer.hpp"
 
-extern "C" void get(bound_buffer * target, char const * const);
+extern "C" void getJson(bound_buffer * target, char const * const);

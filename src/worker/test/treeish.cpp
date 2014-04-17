@@ -24,7 +24,7 @@ void trigger(std::string const & data) {
 }
 
 // Do nothing on get (use the `inject` method on the global tree instead).
-extern "C" void get(bound_buffer * target, char const * const) {}
+extern "C" void getJson(bound_buffer * target, char const * const) {}
 
 // Clobber head up to and including the first ':'.
 std::string & trim(std::string & s) {

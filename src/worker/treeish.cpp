@@ -1,5 +1,7 @@
 #include "treeish.hpp"
 
+#include <rapidjson/reader.h>
+
 #include "layout.hpp"
 #include "stream.hpp"
 #include "bound_buffer.hpp"
@@ -10,27 +12,29 @@
 Treeish::Treeish(void) : _graph() {}
 
 void Treeish::inject(char const * const json) {
-  Stream is(const_cast<char * const>(json));
-  VertexPass vp(&_graph, vertexPath);
-  if (!vp.parse(is)) {
-    _graph.clear();
-    response::error("Serialization of vertex data to data structure failed");
-  }
+  rapidjson::Reader reader;
 
-  is = Stream(const_cast<char * const>(json));
-  char const * const ePath[] = {static_cast<char const * const>("parents")};
-  EdgePass ep(&_graph, &vp, parentsBase, parentsPath);
-  if (!ep.parse(is)) {
+  Stream is(json);
+  VertexPass vp(&_graph, vertexPath);
+  if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, vp)) {
     _graph.clear();
-    response::error("Serialization of edge data to data structure failed");
+    response::log("Serialization of vertex data to data structure failed");
+    response::error(reader.GetParseError());
+  }
+  is = Stream(json);
+  EdgePass ep(&_graph, &vp, parentsBase, parentsPath);
+  if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, ep)) {
+    _graph.clear();
+    response::log("Serialization of edge data to data structure failed");
+    response::error(reader.GetParseError());
   }
 
   response::vacuous();
 }
 
-void Treeish::load(std::string const & url) {
+void Treeish::load(char const * const url) {
   bound_buffer bb;
-  get(&bb, url.c_str());
+  getJson(&bb, url);
   /*
   if (failed) {
     response::errorish(std::string(bb.first, bb.length));

@@ -26,7 +26,8 @@ bool TreeishDispatcher::parse(char const * const source, Treeish * pTreeish) {
   command::WireCommandType pass1;
   _pContext = &pass1;
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, *this)) {
-    response::error("Failed to determine which command to evaluate");
+    response::log("Failed to determine which command to evaluate");
+    response::error(reader.GetParseError());
     return false;
   }
 
@@ -34,6 +35,7 @@ bool TreeishDispatcher::parse(char const * const source, Treeish * pTreeish) {
   Stream next(source);
   _pContext = command::WireCommand::create(pass1.type, pTreeish);
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(next, *this)) {
+    response::log("Failed to evaluate the command");
     response::error(reader.GetParseError());
     delete _pContext;
     return false;

@@ -2,14 +2,6 @@
 
 #include <string>
 
-void log_message(char const * const message) {
-  std::string e = R"({"log":")";
-  e += message;
-  e += R"("})";
-
-  emscripten_worker_respond_provisionally(e.c_str(), e.length());
-}
-
 namespace response {
 
   static const std::string VOID_RESPONSE =
@@ -30,6 +22,14 @@ namespace response {
     r += R"("})";
 
     emscripten_worker_respond_provisionally(r.c_str(), r.length());
+  }
+
+  void log(char const * const message) {
+    std::string e = R"({"log":")";
+    e += message;
+    e += R"("})";
+
+    emscripten_worker_respond_provisionally(e.c_str(), e.length());
   }
 
   void error(char const * const message) {

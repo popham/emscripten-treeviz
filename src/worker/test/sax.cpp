@@ -8,11 +8,11 @@
 
 #include <worker/accept.hpp>
 
-#include <worker/request.hpp>
+//#include <worker/request.hpp>
 #include <worker/response.hpp>
 
 // Do nothing on get (use the `inject` method on the global tree instead).
-extern "C" void get(bound_buffer * target, char const * const) {}
+extern "C" void getJson(bound_buffer * target, char const * const) {}
 
 // buffer responses for tests to validate against
 std::stringstream responses;

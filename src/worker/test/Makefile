@@ -3,9 +3,7 @@ include $(ROOT)/Makefile.inc
 
 WORKER_LIB = $(addprefix ../,$(addsuffix .cpp,accept bound_buffer builder command matching response treeish))
 
-test: treeish flat deep test_subdirs
-
-all: deep.js
+test: treeish flat deep.js test_subdirs
 
 treeish: treeish.cpp $(WORKER_LIB) | build_libs
 	$(CPP) -L $(LIBS) treeish.cpp -l worker -l owner -o treeish
@@ -22,7 +20,7 @@ deep: sax/deep.cpp sax/deep_path.cpp sax.cpp | build_libs
 
 deep.js: deep $(WORKER_LIB) ../request.js
 	$(shell ./deep > ./deep.json)
-	$(EMCC_WORKER) $(WORKER_LIB) sax/deep_path.cpp -s EXPORTED_FUNCTIONS="['_accept','_init_bound_buffer','_log_message']" --js-library ../request.js -o deep.js
+	$(EMCC_WORKER) $(WORKER_LIB) sax/deep_path.cpp -s EXPORTED_FUNCTIONS="['_accept','_init_bound_buffer']" --js-library ../request.js -o deep.js
 
 clean: clean_subdirs
 	rm -f treeish
