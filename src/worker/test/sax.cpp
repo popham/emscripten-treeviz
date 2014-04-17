@@ -5,11 +5,9 @@
 
 #include <boost/format.hpp>
 #include <lest/lest.hpp>
-
 #include <worker/accept.hpp>
-
-//#include <worker/request.hpp>
 #include <worker/response.hpp>
+#include <worker/bound_buffer.hpp>
 
 // Do nothing on get (use the `inject` method on the global tree instead).
 extern "C" void getJson(bound_buffer * target, char const * const) {}

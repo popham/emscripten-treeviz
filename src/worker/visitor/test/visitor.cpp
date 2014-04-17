@@ -3,7 +3,6 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <lest/lest.hpp>
 #include "../grid.hpp"
-#include <iostream>
 
 Graph g;
 Color * pColors=0;

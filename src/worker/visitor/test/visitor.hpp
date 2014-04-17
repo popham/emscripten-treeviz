@@ -1,5 +1,5 @@
+#include <worker/graph.hpp>
 #include "../properties.hpp"
-#include "../../graph.hpp"
 
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 typedef boost::graph_traits<Graph>::edge_descriptor Edge;
