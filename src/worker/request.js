@@ -4,36 +4,36 @@ mergeInto(LibraryManager.library, {
      * Synchronously grab data and leak it to the heap.  The caller is
      * responsible for deallocating the buffer, e.g. `dealloc_bound_buffer`.
      */
-    get : function (target, url) {
-        _log_message("PEEP");
-        function dump(response) {
-            var length = response.length;
-            var buffer = _malloc(length);
-            writeStringToMemory(response, buffer);
-            _init_bound_buffer(target, buffer, length);
+    getJson : function (target, url) {
+        var url = Pointer_stringify(url);
+
+        function dump(bb, string) {
+            var utf8 = new Runtime.UTF8Processor();
+            var buffer = utf8.processJSString(string);
+            buffer.push(0); // terminal null
+            var data = new Uint8Array(buffer);
+            var size = data.length;
+            var first = Module._malloc(size);
+            Module.HEAPU8.set(data, first); // copy without offset
+            _init_bound_buffer(bb, first, size-1); // ignore null terminator
         }
 
-        var url_ = Pointer_stringify(url);
         var http = new XMLHttpRequest();
-        http.open("GET", url_, false);
-        http.responseType = "arraybuffer";
-
-        // Null terminated string response.
-        var byteArray;
-
         http.onload = function (e) {
-            if (http.status == 200 || url_.substr(0,4).toLowerCase() != "http") {
-                dump(http.response);
+            if (http.status == 200 || url.substr(0,4).toLowerCase() != "http") {
+                dump(target, http.response);
             } else {
                 // Vacuous on errors
-                dump("");
+                dump(target, "");
             }
         };
 
         http.onerror = function (e) {
-            dump("");
+            dump(target, "");
         };
 
+        http.open("GET", url, false);
+        http.setRequestHeader("Accept", "application/json");
         http.send(null);
     }
 });
