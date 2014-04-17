@@ -34,7 +34,6 @@ public:
   virtual void Match(unsigned int value)=0;
   virtual void EndRoot(void) {}
 
-  bool parse(Stream & source);
   bool isMatch(void) const;
 
 private:

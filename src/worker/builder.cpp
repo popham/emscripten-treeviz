@@ -67,12 +67,6 @@ void MatchingHandler::Uint(unsigned int value) {
   }
 }
 
-bool MatchingHandler::parse(Stream & source) {
-  rapidjson::Reader reader;
-
-  return reader.Parse<rapidjson::kParseDefaultFlags>(source, *this);
-}
-
 bool MatchingHandler::isMatch(void) const {
   if (_currentMatcher >= _matchers.size()) {
     return false;
