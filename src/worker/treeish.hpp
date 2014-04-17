@@ -1,20 +1,6 @@
 #pragma once
 
-#include <string>
-
-#include <boost/graph/adjacency_list.hpp>
-
-struct CanonicalPosition {
-  int i;
-  int j;
-};
-
-typedef boost::adjacency_list<
-  boost::vecS,
-  boost::vecS,
-  boost::directedS,
-  CanonicalPosition
-  > Graph;
+#include "graph.hpp"
 
 /*
  * The input data structure should be of the form:
@@ -46,8 +32,8 @@ public:
 
   Treeish(void);
 
-  void inject(char const * const json);
-  void load(std::string const & url);
+  void inject(char const * const);
+  void load(char const * const url);
   void scale(const double depth, const double breadth);
   void setPhysics(void);
   void iterate(const unsigned int count);

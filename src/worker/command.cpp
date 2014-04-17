@@ -44,7 +44,7 @@ namespace command {
 
   void Load::call(void) {
     if (_complete == 1) {
-      _pTreeish->load(_url);
+      _pTreeish->load(_url.c_str());
     } else {
       response::incompleteBindingError("Load");
     }
