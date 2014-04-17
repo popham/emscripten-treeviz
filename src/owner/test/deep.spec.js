@@ -1,6 +1,4 @@
 define(['chai', '../treeish'], function (chai, treeish) {
-var assert = chai.assert;
-
 /*
             if (svg.length === 0) {
                 var parser = new DOMParser();
@@ -12,6 +10,7 @@ var assert = chai.assert;
             }
         };
 */
+    var assert = chai.assert;
 
     describe("Deep tree", function () {
         var layout;
@@ -22,10 +21,9 @@ var assert = chai.assert;
         });
 
         function bfStub() {
-            var inner = { innerHTML: "" };
             return {
-                before: inner,
-                after:  inner
+                before: { innerHTML: "" },
+                after:  { innerHTML: "" }
             };
         }
 
