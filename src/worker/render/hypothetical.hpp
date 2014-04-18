@@ -1,9 +1,11 @@
-#include <string>
+#include <sstream>
 
-#include "../treeish.hpp"
+#include "../graph.hpp"
 
 namespace render {
 
-  std::string hypothetical(Graph const &);
+  void hypothetical(Graph const &,
+                    typename Graph::vertex_descriptor root,
+                    std::stringstream & ss);
 
 }
