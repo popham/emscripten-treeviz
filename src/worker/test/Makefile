@@ -23,6 +23,9 @@ deep.js: deep $(WORKER_LIB) ../request.js
 	$(shell ./deep > ./deep.json)
 	$(EMCC_WORKER) $(WORKER_LIB) $(RENDER_LIB) render.cpp sax/deep_path.cpp -s EXPORTED_FUNCTIONS="['_accept','_init_bound_buffer']" --js-library ../request.js -o deep.js
 
+$(RENDER_LIB): ../visitor/grid.hpp
+	touch $(RENDER_LIB)
+
 clean: clean_subdirs
 	rm -f treeish
 	rm -f flat flat.js flat.js.map flat.json
