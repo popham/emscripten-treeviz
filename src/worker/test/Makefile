@@ -1,13 +1,13 @@
 ROOT = /home/popham/linode/emscripten-treeviz
 include $(ROOT)/Makefile.inc
 
-WORKER_LIB = $(addprefix ../,$(addsuffix .cpp,accept bound_buffer builder command graph matching response treeish))
+WORKER_LIB = $(addprefix ../,$(addsuffix .cpp,accept bound_buffer builder command graph matching response stream treeish))
 RENDER_LIB = $(addprefix ../render/,$(addsuffix .cpp,hypothetical))
 
 test: treeish flat deep flat.js deep.js test_subdirs
 
 treeish: render.cpp treeish.cpp $(WORKER_LIB) $(RENDER_LIB) | build_libs
-	$(CPP) -L $(LIBS) $^ -l worker -l owner -o treeish
+	$(CPP) -L $(LIBS) render.cpp treeish.cpp -l render -l worker -l owner -o treeish
 
 flat: render.cpp sax/flat.cpp sax/flat_path.cpp sax.cpp | build_libs
 	$(CPP) -L $(LIBS) $^ -l render -l worker -l owner -o flat
