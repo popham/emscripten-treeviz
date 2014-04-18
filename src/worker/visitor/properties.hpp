@@ -6,17 +6,29 @@
 
 #include <worker/graph.hpp>
 
-struct Slot {
-  Slot(void) : depth(0), breadth(0) {}
-  Slot(unsigned int b, unsigned int d) : breadth(b), depth(d) {}
-  unsigned int breadth;
-  unsigned int depth;
-};
+namespace visitor {
 
-using Color = boost::default_color_type;
-using Slots = std::list<Slot>;
+  struct Slot {
+    Slot(void) : Slot(0, 0) {}
+    Slot(unsigned int b, unsigned int d) : breadth(b), depth(d) {}
+    unsigned int breadth;
+    unsigned int depth;
+  };
 
-bool operator==(Slot const & lhs, Slot const & rhs);
-bool operator!=(Slot const & lhs, Slot const & rhs);
-std::ostream & operator<<(std::ostream & os, Slot const & rhs);
-std::ostream & operator<<(std::ostream & os, Slots const & rhs);
+  struct Position {
+    Position(void) : Position(0.0, 0.0) {}
+    Position(float b, float d) : breadth(b), depth(d) {}
+    Position(Slot const & s) : breadth(s.breadth), depth(s.depth) {}
+    float breadth;
+    float depth;
+  };
+
+  using Color = boost::default_color_type;
+  using Slots = std::list<Slot>;
+
+  bool operator==(Slot const & lhs, Slot const & rhs);
+  bool operator!=(Slot const & lhs, Slot const & rhs);
+  std::ostream & operator<<(std::ostream & os, Slot const & rhs);
+  std::ostream & operator<<(std::ostream & os, Slots const & rhs);
+
+}
