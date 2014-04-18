@@ -1,5 +1,7 @@
 #include "treeish.hpp"
 
+#include <sstream>
+
 #include <rapidjson/reader.h>
 
 #include "layout.hpp"
@@ -21,6 +23,7 @@ void Treeish::inject(char const * const json) {
     response::log("Serialization of vertex data to data structure failed");
     response::error(reader.GetParseError());
   }
+
   is = Stream(json);
   EdgePass ep(&_graph, &vp, parentsBase, parentsPath);
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, ep)) {
@@ -52,7 +55,9 @@ void Treeish::setPhysics(void) { response::vacuous(); }
 void Treeish::iterate(const unsigned int count) { response::vacuous(); }
 
 void Treeish::renderSvg(void) const {
-  response::respond(response::SVG, "fragment", R"(<svg><circle r=\"50\"/></svg>)");
+  std::stringstream ss;
+  ::renderSvg(_graph, _root, ss);
+  response::respond(response::SVG, "fragment", ss.str().c_str());
 }
 
 void Treeish::stop(void) {
@@ -64,26 +69,10 @@ void Treeish::clear(void) {
   _graph.clear();
 }
 
-Treeish::VIterator Treeish::vBegin(void) const {
-  return boost::vertices(_graph).first;
-}
-
-Treeish::VIterator Treeish::vEnd(void) const {
-  return boost::vertices(_graph).second;  
-}
-
-Treeish::EIterator Treeish::eBegin(void) const {
-  return boost::edges(_graph).first;
-}
-
-Treeish::EIterator Treeish::eEnd(void) const {
-  return boost::edges(_graph).second;
-}
-
-Treeish::v_size Treeish::nVertices(void) const {
+unsigned int Treeish::nVertices(void) const {
   return boost::num_vertices(_graph);
 }
 
-Treeish::v_size Treeish::nEdges(void) const {
+unsigned int Treeish::nEdges(void) const {
   return boost::num_edges(_graph);
 }
