@@ -10,7 +10,7 @@ else
 CPP = clang++ -std=c++11 $(INCLUDES)
 endif
 
-EMCC_WORKER = /home/popham/emscripten/emcc -O$(EMCC_OPTIMIZATION) -std=c++11 -s BUILD_AS_WORKER=1 $(INCLUDES) -I $(EROOT)/include
+EMCC_WORKER = /home/popham/emscripten/emcc -O$(EMCC_OPTIMIZATION) -std=c++11 -s BUILD_AS_WORKER=1 -s ALLOW_MEMORY_GROWTH=1 $(INCLUDES) -I $(EROOT)/include
 
 ARCHIVE = ar rvs
 
