@@ -4,6 +4,7 @@ include $(ROOT)/Makefile.inc
 lib:
 	make -C src/owner/ lib
 	make -C src/worker/ lib
+	make -C src/worker/render/ lib
 
 .PHONY: lib
 
