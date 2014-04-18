@@ -92,6 +92,22 @@ bool Treeish::contains(typename Graph::vertex_descriptor source,
                      std::end(boost::edges(_graph)),
                      [&] (typename Graph::edge_descriptor e) {
                        return boost::source(e, _graph) == source
-                         && boost::target(e, _graph)==target;
+                         && boost::target(e, _graph) == target;
                     });
+}
+
+void Treeish::printVertices(std::ostream & target) const {
+  for (auto v : boost::vertices(_graph)) {
+    target << v << std::endl;
+  }
+}
+
+void Treeish::printEdges(std::ostream & target) const {
+  for (auto e : boost::edges(_graph)) {
+    target << "("
+           << boost::source(e, _graph)
+           << ","
+           << boost::target(e, _graph)
+           << ")" << std::endl;
+  }
 }

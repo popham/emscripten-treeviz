@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 #include "graph.hpp"
 
 extern void renderSvg(Graph const &,
@@ -46,6 +48,8 @@ public:
   bool contains(typename Graph::vertex_descriptor vertex) const;
   bool contains(typename Graph::vertex_descriptor source,
                 typename Graph::vertex_descriptor target) const;
+  void printVertices(std::ostream & target) const;
+  void printEdges(std::ostream & target) const;
 
 private:
   Graph _graph;
