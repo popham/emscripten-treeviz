@@ -87,6 +87,29 @@ const lest::test interrogate[] =
     EXPECT( dump_responses() == provisional(sought) );
   },
 
+  "Treeish parses mock data to its expected topology", []
+  {
+    // Vertices
+    EXPECT( treeish.contains(0) );
+    EXPECT( treeish.contains(1) );
+    EXPECT( treeish.contains(2) );
+    EXPECT( treeish.contains(3) );
+    EXPECT( treeish.contains(4) );
+    EXPECT( treeish.contains(5) );
+    EXPECT( treeish.contains(6) );
+
+    // Edges
+    EXPECT( treeish.contains(0,1) );
+    EXPECT( treeish.contains(0,2) );
+    EXPECT( treeish.contains(0,3) );
+    EXPECT( treeish.contains(1,4) );
+    EXPECT( treeish.contains(2,4) );
+    EXPECT( treeish.contains(2,5) );
+    EXPECT( treeish.contains(3,5) );
+    EXPECT( treeish.contains(4,6) );
+    EXPECT( treeish.contains(5,6) );
+  },
+
   "Treeish parses a Scale command and responds Void", []
   {
     trigger(protocol::scale(5,10));

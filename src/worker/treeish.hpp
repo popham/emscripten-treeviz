@@ -43,6 +43,9 @@ public:
   void clear(void);
   unsigned int nVertices(void) const;
   unsigned int nEdges(void) const;
+  bool contains(typename Graph::vertex_descriptor vertex) const;
+  bool contains(typename Graph::vertex_descriptor source,
+                typename Graph::vertex_descriptor target) const;
 
 private:
   Graph _graph;

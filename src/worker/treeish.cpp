@@ -1,6 +1,7 @@
 #include "treeish.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 #include <rapidjson/reader.h>
 
@@ -75,4 +76,22 @@ unsigned int Treeish::nVertices(void) const {
 
 unsigned int Treeish::nEdges(void) const {
   return boost::num_edges(_graph);
+}
+
+bool Treeish::contains(typename Graph::vertex_descriptor vertex) const {
+  return std::any_of(std::begin(boost::vertices(_graph)),
+                     std::end(boost::vertices(_graph)),
+                     [&] (typename Graph::vertex_descriptor v) {
+                       return v == vertex;
+                    });
+}
+
+bool Treeish::contains(typename Graph::vertex_descriptor source,
+                       typename Graph::vertex_descriptor target) const {
+  return std::any_of(std::begin(boost::edges(_graph)),
+                     std::end(boost::edges(_graph)),
+                     [&] (typename Graph::edge_descriptor e) {
+                       return boost::source(e, _graph) == source
+                         && boost::target(e, _graph)==target;
+                    });
 }

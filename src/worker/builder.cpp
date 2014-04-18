@@ -25,24 +25,37 @@ void MatchingHandler::StartObject(void) {
   if (_currentMatcher < _matchers.size()) {
     _isKeyNext = true;
 
-    // Prepare stack for reentrant case handling.  Fine since empty keys are
-    // forbidden by JSON.
+    /*
+     * Prepare stack for reentrant case handling.  Fine since empty keys are
+     * forbidden by JSON.
+     */
     _matchers[_currentMatcher].push("");
   }
 }
 
 void MatchingHandler::EndObject(rapidjson::SizeType size) {
+  // Ignore uncharted stuff.
   if (_currentMatcher < _matchers.size()) {
-    // Nonzero depth implies we're still in an object.
-    _isKeyNext = _matchers[_currentMatcher].pop() > 0;
+    /*
+     * Nonzero depth implies we're still in an object (matchers cannot cross
+     * array boundaries).
+     */
+    if (_matchers[_currentMatcher].pop() > 0) {
+      _isKeyNext = true;
+    } else if (_currentMatcher == 0) {
+      // Root of paths and not inside object => trigger EndRoot()
+      EndRoot();
+    }
   }
 }
 
 void MatchingHandler::String(Ch const * pValue,
                              rapidjson::SizeType length,
                              bool isCopy) {
-  // Insufficient information to determine whether key or value if a matcher is
-  // not active.
+  /*
+   * Insufficient information to determine whether key or value if a matcher is
+   * not active.
+   */
   if (_currentMatcher < _matchers.size()) {
     std::string value(pValue, length);
 
