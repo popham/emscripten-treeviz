@@ -2,10 +2,12 @@
 
 #include <string>
 
+#include <rapidjson/rapidjson.h>
 #include "treeish.hpp"
 #include "response.hpp"
 
 Treeish treeish;
+typedef rapidjson::StringStream Stream;
 
 void accept(char const * const data, int size) {
   TreeishDispatcher dispatcher;

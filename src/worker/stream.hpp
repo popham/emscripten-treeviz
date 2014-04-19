@@ -3,10 +3,7 @@
 #include <string>
 #include <ostream>
 
-#include <rapidjson/rapidjson.h>
 #include <boost/format.hpp>
-
-typedef rapidjson::StringStream Stream;
 
 template <typename T>
 std::string to_string(T const &);

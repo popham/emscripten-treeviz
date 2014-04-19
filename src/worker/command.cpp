@@ -49,7 +49,7 @@ namespace command {
       response::incompleteBindingError("Load");
     }
   }
-#include <iostream>
+
   bool Scale::bind(std::string const & name, Value value) {
     if (name == "breadth") {
       _breadth = boost::any_cast<double>(value);

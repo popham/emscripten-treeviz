@@ -4,7 +4,6 @@
 
 #include <boost/any.hpp>
 #include <rapidjson/reader.h>
-#include "stream.hpp"
 #include "command.hpp"
 #include "treeish.hpp"
 
