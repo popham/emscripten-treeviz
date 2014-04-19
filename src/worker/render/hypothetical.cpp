@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include <boost/format.hpp>
-#include <worker/stream.hpp>
 #include <worker/visitor/properties.hpp>
 #include <worker/visitor/grid.hpp>
 
@@ -37,25 +36,25 @@ namespace render {
     visitor::Color * pColoring = new visitor::Color[boost::num_vertices(g)];
     visitor::computeHypothetical(g, root, pSlots, pColoring);
 
-    for (auto e : boost::edges(g)) {
+    for (auto e : range_pair(boost::edges(g))) {
       auto source = pSlots[boost::source(e, g)];
       auto target = pSlots[boost::target(e, g)];
 
       bool first = true;
-      std::for_each(source.begin(), source.end(), [&] (visitor::Slot const & s) {//(Position p)...
+      std::for_each(source.begin(), source.end(), [&] (visitor::Slot const & s) {
         std::for_each(target.begin(), target.end(), [&] (visitor::Slot const & t) {
-          ss << UnescapedJson(first ? _hypo::arrow(s, t, "black") : _hypo::arrow(s, t, "red"));
+          ss << (first ? _hypo::arrow(s, t, "black") : _hypo::arrow(s, t, "red"));
           first = false;
         });
       });
     }
 
-    for (auto v : boost::vertices(g)) {
+    for (auto v : range_pair(boost::vertices(g))) {
       auto slot = pSlots[v];
 
       bool first = true;
         std::for_each(slot.begin(), slot.end(), [&] (visitor::Slot const & s) {
-          ss << UnescapedJson(first ? _hypo::circle(s, "black") : _hypo::circle(s, "red"));
+          ss << (first ? _hypo::circle(s, "black") : _hypo::circle(s, "red"));
           first = false;
       });
     }

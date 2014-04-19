@@ -1,6 +1,9 @@
 #include "response.hpp"
 
 #include <string>
+#include <sstream>
+
+#include "stream.hpp"
 
 namespace response {
 
@@ -13,31 +16,35 @@ namespace response {
   void respond(const Response response,
                char const * const message_key,
                char const * const message) {
-    std::string r = R"({"response":)";
-    r += std::to_string((int)response);
-    r += R"(,")";
-    r += message_key;
-    r += R"(":")";
-    r += message;
-    r += R"("})";
+    std::stringstream r;
+    r << "{\"response\":"
+      << (int)response
+      << ",\""
+      << UnescapedJson(message_key)
+      << "\":\""
+      << UnescapedJson(message)
+      << "\"}";
 
-    emscripten_worker_respond_provisionally(r.c_str(), r.length());
+    emscripten_worker_respond_provisionally(r.str().c_str(), r.str().length());
+  }
+
+  void nullary(char const * const key, char const * const value) {
+    std::stringstream n;
+    n << "{\""
+      << UnescapedJson(key)
+      << "\":\""
+      << UnescapedJson(value)
+      << "\"}";
+
+    emscripten_worker_respond_provisionally(n.str().c_str(), n.str().length());
   }
 
   void log(char const * const message) {
-    std::string e = R"({"log":")";
-    e += message;
-    e += R"("})";
-
-    emscripten_worker_respond_provisionally(e.c_str(), e.length());
+    nullary("log", message);
   }
 
   void error(char const * const message) {
-    std::string e = R"({"error":")";
-    e += message;
-    e += R"("})";
-
-    emscripten_worker_respond_provisionally(e.c_str(), e.length());
+    nullary("error", message);
   }
 
   void incompleteBindingError(char const * const attempted_command) {
