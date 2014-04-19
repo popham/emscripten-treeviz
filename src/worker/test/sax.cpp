@@ -1,6 +1,5 @@
 #include "sax.hpp"
 
-#include <iostream>
 #include <sstream>
 
 #include <boost/format.hpp>
@@ -29,29 +28,28 @@ std::string dump_responses(void) {
   return r;
 }
 
-const lest::test walk[] = 
+const lest::test walk[] =
 {
   "Parse mock data without flagging an error", []
   {
-    treeish.clear();
     treeish.inject(jsonMock.c_str());
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == sought.str() );
   },
 
-  "Constructed graph contains 3 vertices", []
+  "Construct graph with 3 vertices", []
   {
     EXPECT( treeish.nVertices() == 3 );
   },
 
-  "Constructed graph contains 3 edges", []
+  "Construct graph with 3 edges", []
   {
     EXPECT( treeish.nEdges() == 3 );
   }
 };
 
 int main(void) {
-  std::cout << jsonMock << std::endl;
+  std::cout << jsonMock.c_str() << std::endl;
   return lest::run(walk);
 }

@@ -80,7 +80,6 @@ const lest::test interrogate[] =
 {
   "Treeish parses mock data and responds Void", []
   {
-    treeish.clear(); // Take global to default constructed initial state.
     treeish.inject(dag.c_str());
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
