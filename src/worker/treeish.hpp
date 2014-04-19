@@ -33,6 +33,7 @@ extern void renderSvg(Graph const &,
 class Treeish {
 public:
   Treeish(void);
+  ~Treeish(void);
 
   void inject(char const * const);
   void load(char const * const url);
@@ -42,7 +43,6 @@ public:
   void renderSvg(void) const;
   void stop(void);
 
-  void clear(void);
   unsigned int nVertices(void) const;
   unsigned int nEdges(void) const;
   bool contains(typename Graph::vertex_descriptor vertex) const;
@@ -52,6 +52,6 @@ public:
   void printEdges(std::ostream & target) const;
 
 private:
-  Graph _graph;
+  Graph * _pGraph;
   typename Graph::vertex_descriptor _root;
 };

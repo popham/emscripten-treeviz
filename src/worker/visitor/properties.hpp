@@ -1,9 +1,8 @@
 #pragma once
 
 #include <list>
-#include <iostream>
-#include <boost/property_map/vector_property_map.hpp>
 
+#include <boost/property_map/vector_property_map.hpp>
 #include <worker/graph.hpp>
 
 namespace visitor {
