@@ -99,40 +99,46 @@ VertexPass::VertexPass(Graph * const pGraph,
 }
 
 void VertexPass::Match(unsigned int value) {
-  Graph::vertex_descriptor next = boost::add_vertex(/* vertexProperties, */
-                                                    *_pGraph);
-  _table[value] = next;
-  _vertices.push_back(next);
-}
-
-const Graph::vertex_descriptor VertexPass::lookup(unsigned int id) {
-  return _table[id];
-}
-
-VertexPass::const_iterator VertexPass::begin(void) const {
-  return _vertices.begin();
-}
-
-VertexPass::const_iterator VertexPass::end(void) const {
-  return _vertices.end();
+  auto v = boost::add_vertex(*_pGraph);
+  (*_pGraph)[v].id = value;
 }
 
 EdgePass::EdgePass(Graph * const pGraph,
-                   VertexPass * const pVertices,
                    Path const & parentsRoot,
                    Path const & id) :
   _pGraph(pGraph),
-  _pVertices(pVertices),
-  _currentVertex(pVertices->begin())
+  _currentVertex(boost::vertices(*pGraph).first),
+  _isParentFound(false)
 {
   push_path(parentsRoot);
   push_path(id);
+
+  _parentless.push(*_currentVertex); // Remove if a parent has been found.
+
+  for (auto v : range_pair(boost::vertices(*_pGraph))) {
+    _descriptors[(*_pGraph)[v].id] = v;
+  }
 }
 
 void EdgePass::Match(unsigned int value) {
-  boost::add_edge(_pVertices->lookup(value), *_currentVertex,
-                  /* edgeProperties, */
-                  *_pGraph);
+  boost::add_edge(_descriptors[value], *_currentVertex, *_pGraph);
+  if (!_isParentFound) {
+    // Match implies parent found, but only pop once.
+    _isParentFound = true;
+    _parentless.pop();
+  }
 }
 
-void EdgePass::EndRoot(void) { ++_currentVertex; }
+void EdgePass::EndRoot(void) {
+  if (++_currentVertex != boost::vertices(*_pGraph).second) {
+    // Don't push end onto the stack--it doesn't exist.
+    _parentless.push(*_currentVertex);
+  }
+
+  // Set flag for next object.
+  _isParentFound = false;
+}
+
+EdgePass::VertexS const & EdgePass::parentless(void) const {
+  return _parentless;
+}

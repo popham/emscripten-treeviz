@@ -3,9 +3,9 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <stack>
 
 #include <rapidjson/reader.h>
-#include "stream.hpp"
 #include "treeish.hpp"
 #include "matching.hpp"
 
@@ -43,38 +43,36 @@ private:
 };
 
 class VertexPass : public MatchingHandler {
-  typedef std::vector<Graph::vertex_descriptor> VertexOrder;
-  typedef std::map<unsigned int, Graph::vertex_descriptor> VertexLookup;
-
 public:
-  typedef VertexOrder::const_iterator const_iterator;
-
   VertexPass(Graph * const pGraph,
              Path const & path);
 
   virtual void Match(unsigned int value);
 
-  const Graph::vertex_descriptor lookup(unsigned int id);
-  const_iterator begin(void) const;
-  const_iterator end(void) const;
-
 private:
   Graph * const _pGraph;
-  VertexLookup _table;
-  VertexOrder _vertices;
 };
 
 class EdgePass : public MatchingHandler {
 public:
+  typedef std::stack<Graph::vertex_descriptor> VertexS;
+
   EdgePass(Graph * const pGraph,
-           VertexPass * const pVertices,
            Path const & base,
            Path const & path);
   virtual void Match(unsigned int value);
   virtual void EndRoot(void);
+  VertexS const & parentless(void) const;
 
 private:
   Graph * const _pGraph;
-  VertexPass * const _pVertices;
-  VertexPass::const_iterator _currentVertex;
+
+  /*
+   * The multipass iterator concept guarantees that the vertices are arranged
+   * in the data stream's sequence.
+   */
+  Graph::vertex_iterator _currentVertex;
+  VertexS _parentless;
+  std::map<unsigned int, Graph::vertex_descriptor> _descriptors;
+  bool _isParentFound;
 };
