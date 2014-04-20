@@ -11,9 +11,6 @@ typedef rapidjson::StringStream Stream;
 
 void accept(char const * const data, int size) {
   TreeishDispatcher dispatcher;
-  // Just adding a null terminator here.  I sent a feeler sent to author of
-  // `text-encoder` to add a null-terminated option under the javascript
-  // library.
   dispatcher.parse(std::string(data, size).c_str(), &treeish);
 }
 
@@ -34,9 +31,9 @@ bool TreeishDispatcher::parse(char const * const source, Treeish * pTreeish) {
   }
 
   // Call the command.
-  Stream next(source);
+  is = Stream(source);
   _pContext = command::WireCommand::create(pass1.type, pTreeish);
-  if (!reader.Parse<rapidjson::kParseDefaultFlags>(next, *this)) {
+  if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, *this)) {
     response::log("Failed to evaluate the command");
     response::error(reader.GetParseError());
     delete _pContext;

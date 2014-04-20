@@ -1,0 +1,8 @@
+adjacency
+vertex list graph for all vertex traversal
+depth first traversal with no repetitions possible?
+nonmutable n.g. must discover deepest ranked node before pruning
+  resolve repetitions during construction
+  leave i,j nondense on repetition, but gather empty intervals during construction and iterate all vertices to resolve (canonical ordering guarantee on monotonic vertex list).
+mutable property graph to admit i,j\'s
+dfs order naturally has monotonic nondecreasing j property

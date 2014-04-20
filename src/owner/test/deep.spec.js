@@ -13,6 +13,7 @@ define(['chai', '../treeish'], function (chai, treeish) {
     var assert = chai.assert;
 
     describe("Deep tree", function () {
+        this.timeout(5000);
         var layout;
 
         it("should instantiate", function () {
