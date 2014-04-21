@@ -6,8 +6,8 @@
 #include <stack>
 
 #include <rapidjson/reader.h>
-#include "treeish.hpp"
 #include "matching.hpp"
+#include "graph.hpp"
 
 /*
  * From a JSON array root, match the path to a key with unsigned int value.

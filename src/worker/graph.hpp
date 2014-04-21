@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <ostream>
 
 #include <boost/graph/adjacency_list.hpp>
 
@@ -34,7 +35,16 @@ struct _range_pair {
   T begin(void) { return pair.first; }
   T end(void) { return pair.second; }
 };
+
 template <typename T>
 _range_pair<T> range_pair(std::pair<T,T> p) {
   return _range_pair<T>(p);
 }
+
+bool contains(typename Graph::vertex_descriptor vertex);
+bool contains(typename Graph::vertex_descriptor source,
+              typename Graph::vertex_descriptor target);
+void printVertices(std::ostream & target);
+void printEdges(std::ostream & target);
+
+extern Graph theGraph;
