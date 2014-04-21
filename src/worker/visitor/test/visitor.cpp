@@ -6,23 +6,25 @@
 #include "../grid.hpp"
 
 Graph g;
-Color * pColors=0;
-Slots * pSlots=0;
+visitor::Color * pColors=0;
+visitor::Slots * pSlots=0;
 
 lest::test tests[] =
 {
-  "The GridVisitor pass yields the sought hypothetical positions", []
+  "The GridVisitor pass yields the sought slots", []
   {
     // Build data structure. For testing, add the graph's root first, otherwise
     // find the graph's root and provide its descriptor instead of 0.
     install(g);
-    pColors = new Color[boost::num_vertices(g)];
-    pSlots = new Slots[boost::num_vertices(g)];
+    pColors = new visitor::Color[boost::num_vertices(g)];
+    pSlots = new visitor::Slots[boost::num_vertices(g)];
     computeHypothetical(g, 0, pSlots, pColors);
-    std::vector<Slots> sought = slots();
+    delete[] pColors;
+    std::vector<visitor::Slots> sought = slots();
 
     EXPECT(sought.size() == boost::num_vertices(g));
     EXPECT(std::equal(sought.begin(), sought.end(), pSlots));
+    delete[] pSlots;
   }
 };
 

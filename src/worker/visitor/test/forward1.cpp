@@ -1,5 +1,7 @@
 #include "visitor.hpp"
 
+using namespace visitor;
+
 /*
  * Forward edge before chain.
  */

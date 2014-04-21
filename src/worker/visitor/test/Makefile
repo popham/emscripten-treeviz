@@ -1,7 +1,7 @@
 ROOT = /home/popham/linode/emscripten-treeviz
 include $(ROOT)/Makefile.inc
 
-VISITOR_TEST = visitor.o ../properties.o ../../graph.o
+VISITOR_TEST = visitor.o ../properties.o
 TEST_TARGETS = mess tree forward1 forward2 cross
 
 test: $(TEST_TARGETS) test_subdirs
