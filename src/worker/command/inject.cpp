@@ -17,11 +17,13 @@ unsigned int computeRoot(void) {
 
   unsigned int rootCount=0;
   for (auto v : range_pair(boost::vertices(theGraph))) {
-    if (pParentExists[v]) {
+    if (!pParentExists[v]) {
       ++rootCount;
       theGraph[boost::graph_bundle].root = v;
     }
   }
+
+  delete[] pParentExists;
 
   return rootCount;
 }

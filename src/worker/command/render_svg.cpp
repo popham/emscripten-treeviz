@@ -4,31 +4,14 @@
 #include <worker/render.hpp>
 
 void renderSvg(unsigned int root) {
-  bool * pParentExists = new bool[boost::num_vertices(theGraph)];
-  for (auto e : range_pair(boost::edges(theGraph))) {
-    pParentExists[boost::target(e, theGraph)] = true;
-  }
-
-  Graph::vertex_descriptor r;
-  bool isFound = false;
+  std::stringstream ss;
   for (auto v : range_pair(boost::vertices(theGraph))) {
-    if (!pParentExists[v]) {
-      if (isFound) {
-        response::error("More than one disconnected components have been found");
-        return;
-      } else {
-        isFound = true;
-        r = v;
-      }
+    if (theGraph[v].id == root) {
+      svg::render(theGraph, v, ss);
+      response::respond(response::SVG, "fragment", ss.str().c_str());
+      return;
     }
   }
 
-  if (!isFound) {
-    response::error("No disconnected components were found");
-    return;
-  }
-
-  std::stringstream ss;
-  svg::render(theGraph, r, ss);
-  response::respond(response::SVG, "fragment", ss.str().c_str());
+  response::error("The branch supplied for rendering was not found");
 }

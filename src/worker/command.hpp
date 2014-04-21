@@ -11,5 +11,3 @@ extern "C" void setPhysics(void);
 extern "C" void iterate(const unsigned int count);
 extern "C" void renderSvg(unsigned int root);
 extern "C" void stop(void);
-
-extern Graph theGraph;
