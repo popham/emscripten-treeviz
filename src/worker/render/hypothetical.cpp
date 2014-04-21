@@ -35,6 +35,7 @@ namespace svg {
     visitor::Slots * pSlots = new visitor::Slots[boost::num_vertices(g)];
     visitor::Color * pColoring = new visitor::Color[boost::num_vertices(g)];
     visitor::computeHypothetical(g, root, pSlots, pColoring);
+    delete[] pColoring;
 
     for (auto e : range_pair(boost::edges(g))) {
       auto source = pSlots[boost::source(e, g)];
@@ -58,5 +59,7 @@ namespace svg {
           first = false;
       });
     }
+
+    delete[] pSlots;
   }
 }
