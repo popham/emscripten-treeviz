@@ -35,16 +35,7 @@ public:
   Treeish(void);
   ~Treeish(void);
 
-  void inject(char const * const);
-  void load(char const * const url);
-  void scale(const double depth, const double breadth);
-  void setPhysics(void);
-  void iterate(const unsigned int count);
-  void renderSvg(void) const;
-  void stop(void);
-
-  unsigned int nVertices(void) const;
-  unsigned int nEdges(void) const;
+  // export for test use:
   bool contains(typename Graph::vertex_descriptor vertex) const;
   bool contains(typename Graph::vertex_descriptor source,
                 typename Graph::vertex_descriptor target) const;
