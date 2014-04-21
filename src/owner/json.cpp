@@ -17,8 +17,4 @@ namespace json {
 
     return p;
   }
-
-  std::string pair(std::string const & string, command::Command value) {
-    return pair(string, std::to_string((unsigned int)value));
-  }
 }

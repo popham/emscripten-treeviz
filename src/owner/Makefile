@@ -3,7 +3,7 @@ include $(ROOT)/Makefile.inc
 
 lib: $(LIBS)/libowner.a
 
-$(LIBS)/libowner.a: protocol.o json.o | $(LIBS)
+$(LIBS)/libowner.a: json.o | $(LIBS)
 	$(ARCHIVE) $(LIBS)/libowner.a $^
 
 test: test_subdirs
