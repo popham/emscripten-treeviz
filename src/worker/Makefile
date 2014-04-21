@@ -1,7 +1,7 @@
 ROOT = /home/popham/linode/emscripten-treeviz
 include $(ROOT)/Makefile.inc
 
-LIB_MEMBERS = accept bound_buffer builder command graph matching response stream treeish
+LIB_MEMBERS = bound_buffer builder graph matching response stream
 
 lib: $(LIBS)/libworker.a
 
