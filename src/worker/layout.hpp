@@ -2,6 +2,6 @@
 
 #include "matching.hpp"
 
-extern const Path vertexPath;
-extern const Path parentsBase;
-extern const Path parentsPath;
+extern const Path theVertexPath;
+extern const Path theParentsBase;
+extern const Path theParentsPath;
