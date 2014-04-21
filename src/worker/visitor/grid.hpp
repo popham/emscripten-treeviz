@@ -69,7 +69,7 @@ namespace visitor {
                            typename G::vertex_descriptor root,
                            SM slots,
                            CM colors) {
-    boost::depth_first_visit(graph, root, GridVisitor<SM>(slots), colors);
+    boost::depth_first_search(graph, GridVisitor<SM>(slots), colors, root);
   }
 
 }
