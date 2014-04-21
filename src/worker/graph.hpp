@@ -8,11 +8,20 @@ struct VProperties {
   unsigned int id; // add vertices with json handle.
 };
 
+struct GProperties {
+  boost::adjacency_list<
+    boost::vecS,
+    boost::vecS,
+    boost::directedS>::vertex_descriptor root;
+};
+
 using Graph = boost::adjacency_list<
   boost::vecS,
   boost::vecS,
   boost::directedS,
-  VProperties
+  VProperties,
+  boost::no_property,
+  GProperties
   >;
 
 using vertex_iterator = boost::graph_traits<Graph>::vertex_iterator;
