@@ -15,6 +15,6 @@ char const * const ePathRaw[] = {
   static_cast<char const * const>("parentId")
 };
 
-const Path vertexPath(&vPathRaw[0], 3);
-const Path parentsBase(&eBaseRaw[0], 2);
-const Path parentsPath(&ePathRaw[0], 2);
+const Path theVertexPath(&vPathRaw[0], 3);
+const Path theParentsBase(&eBaseRaw[0], 2);
+const Path theParentsPath(&ePathRaw[0], 2);

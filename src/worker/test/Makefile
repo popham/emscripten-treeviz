@@ -1,23 +1,23 @@
 ROOT = /home/popham/linode/emscripten-treeviz
 include $(ROOT)/Makefile.inc
 
-WORKER_LIB = $(addprefix ../,$(addsuffix .cpp,accept bound_buffer builder command graph matching response stream treeish))
+WORKER_LIB = $(addprefix ../,$(addsuffix .cpp,bound_buffer builder graph matching response stream))
 RENDER_LIB = $(addprefix ../render/,$(addsuffix .cpp,hypothetical))
 
 test: treeish flat deep flat.js deep.js test_subdirs
 
 treeish: render.cpp treeish.cpp $(WORKER_LIB) $(RENDER_LIB) | build_libs
-	$(CPP) -L $(LIBS) render.cpp treeish.cpp -l render -l worker -l owner -o treeish
+	$(CPP) -L $(LIBS) render.cpp treeish.cpp -l command -l render -l worker -l owner -o treeish
 
 flat: render.cpp sax/flat.cpp sax/flat_path.cpp sax.cpp | build_libs
-	$(CPP) -L $(LIBS) $^ -l render -l worker -l owner -o flat
+	$(CPP) -L $(LIBS) $^ -l command -l render -l worker -l owner -o flat
 
 flat.js: flat $(WORKER_LIB) $(RENDER_LIB) ../request.js
 	$(shell ./flat > ./flat.json)
 	$(EMCC_WORKER) $(WORKER_LIB) $(RENDER_LIB) render.cpp sax/flat_path.cpp -s EXPORTED_FUNCTIONS="['_accept']" --js-library ../request.js -o flat.js
 
 deep: render.cpp sax/deep.cpp sax/deep_path.cpp sax.cpp | build_libs
-	$(CPP) -L $(LIBS) $^ -l render -l worker -l owner -o deep
+	$(CPP) -L $(LIBS) $^ -l command -l render -l worker -l owner -o deep
 
 deep.js: deep $(WORKER_LIB) ../request.js
 	$(shell ./deep > ./deep.json)

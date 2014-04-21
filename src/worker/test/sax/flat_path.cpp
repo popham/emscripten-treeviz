@@ -9,6 +9,6 @@ char const * const eBaseRaw[] = {
 };
 char const * const ePathRaw[] = {};
 
-const Path vertexPath(&vPathRaw[0], 1);
-const Path parentsBase(&eBaseRaw[0], 1);
-const Path parentsPath(&ePathRaw[0], 0);
+const Path theVertexPath(&vPathRaw[0], 1);
+const Path theParentsBase(&eBaseRaw[0], 1);
+const Path theParentsPath(&ePathRaw[0], 0);

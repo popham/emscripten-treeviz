@@ -7,21 +7,12 @@
 #include <lest/lest.hpp>
 
 #include <owner/json.hpp>
-#include <owner/protocol.hpp>
-#include <worker/accept.hpp>
-#include <worker/layout.hpp>
+#include <worker/command.hpp>
+#include <worker/graph.hpp>
 #include <worker/request.hpp>
 #include <worker/response.hpp>
 
-char const * const vPathRaw[] = {static_cast<char const * const>("id")};
-char const * const ePathRaw[] = {static_cast<char const * const>("parents")};
-const Path vertexPath(&vPathRaw[0], 1);
-const Path parentsBase(&ePathRaw[0], 1);
-const Path parentsPath(0, 0);
-
-void trigger(std::string const & data) {
-  accept(data.c_str(), data.length());
-}
+Graph theGraph;
 
 // Do nothing on get (use the `inject` method on the global tree instead).
 extern "C" void getJson(bound_buffer * target, char const * const) {}
@@ -70,6 +61,12 @@ const std::string dag = "["
   + json::open() + json::pair("id", "7") + "," + json::pair("parents", "[5,6]") + json::close()
   + "]";
 
+char const * const vPathRaw[] = {static_cast<char const * const>("id")};
+char const * const ePathRaw[] = {static_cast<char const * const>("parents")};
+const Path theVertexPath(&vPathRaw[0], 1);
+const Path theParentsBase(&ePathRaw[0], 1);
+const Path theParentsPath(0, 0);
+
 std::string dump_responses(void) {
   std::string r = responses.str();
   responses.str("");
@@ -78,64 +75,64 @@ std::string dump_responses(void) {
 
 const lest::test interrogate[] =
 {
-  "Treeish parses mock data and responds Void", []
+  "Inject method parses mock data and responds Void", []
   {
-    treeish.inject(dag.c_str());
+    inject(dag.c_str());
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == provisional(sought) );
   },
 
-  "Treeish parses mock data to its expected topology", []
+  "Inject method maps mock data to its expected topology", []
   {
     // Vertices
-    EXPECT( treeish.contains(0) );
-    EXPECT( treeish.contains(1) );
-    EXPECT( treeish.contains(2) );
-    EXPECT( treeish.contains(3) );
-    EXPECT( treeish.contains(4) );
-    EXPECT( treeish.contains(5) );
-    EXPECT( treeish.contains(6) );
+    EXPECT( contains(0) );
+    EXPECT( contains(1) );
+    EXPECT( contains(2) );
+    EXPECT( contains(3) );
+    EXPECT( contains(4) );
+    EXPECT( contains(5) );
+    EXPECT( contains(6) );
 
     // Edges
-    EXPECT( treeish.contains(0,1) );
-    EXPECT( treeish.contains(0,2) );
-    EXPECT( treeish.contains(0,3) );
-    EXPECT( treeish.contains(1,4) );
-    EXPECT( treeish.contains(2,4) );
-    EXPECT( treeish.contains(2,5) );
-    EXPECT( treeish.contains(3,5) );
-    EXPECT( treeish.contains(4,6) );
-    EXPECT( treeish.contains(5,6) );
+    EXPECT( contains(0,1) );
+    EXPECT( contains(0,2) );
+    EXPECT( contains(0,3) );
+    EXPECT( contains(1,4) );
+    EXPECT( contains(2,4) );
+    EXPECT( contains(2,5) );
+    EXPECT( contains(3,5) );
+    EXPECT( contains(4,6) );
+    EXPECT( contains(5,6) );
   },
 
-  "Treeish parses a Scale command and responds Void", []
+  "Scale method responds Void", []
   {
-    trigger(protocol::scale(5,10));
+    scale(5,10);
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == provisional(sought) );
   },
 
-  "Treeish parses a Set Physics command and responds Void", []
+  "Set Physics method responds Void", []
   {
-    trigger(protocol::setPhysics());
+    setPhysics();
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == provisional(sought) );
   },
 
-  "Treeish parses an Iterate command and responds Void", []
+  "Iterate method responds Void", []
   {
-    trigger(protocol::iterate(7));
+    iterate(7);
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == provisional(sought) );
   },
 
-  "Treeish parses a Render SVG command and responds SVG", []
+  "Render SVG method generates an XML fragment and responds SVG", []
   {
-    trigger(protocol::renderSvg());
+    renderSvg(1);
 
     rapidjson::Document svgResponse;
     std::string raw = dump_responses();
@@ -148,25 +145,25 @@ const lest::test interrogate[] =
     EXPECT( [&]{ svg.parse<rapidxml::parse_fastest>(fragment); return true; }() );
   },
 
-  "Treeish parses another Scale command and responds Void", []
+  "Scale method responds Void", []
   {
-    trigger(protocol::scale(10,15));
+    scale(10,15);
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == provisional(sought) );
   },
 
-  "Treeish parses a Stop command and responds Clean", []
+  "Stop method responds Clean", []
   {
-    trigger(protocol::stop());
+    stop();
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::CLEAN);
     EXPECT( dump_responses() == final(sought) );
   },
 
-  "Treeish parses another Scale command and responds Void", []
+  "Scale method responds Void", []
   {
-    trigger(protocol::scale(10,15));
+    scale(10,15);
     boost::format sought = boost::format(R"({"response":%s})")
       % std::to_string(response::VOID);
     EXPECT( dump_responses() == provisional(sought) );
