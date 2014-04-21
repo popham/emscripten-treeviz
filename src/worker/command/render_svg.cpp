@@ -1,11 +1,12 @@
-#include "command.hpp"
+#include "../command.hpp"
 
 #include <sstream>
+#include <worker/render.hpp>
 
-void renderSvg(unsigned int root) const {
+void renderSvg(unsigned int root) {
   bool * pParentExists = new bool[boost::num_vertices(theGraph)];
   for (auto e : range_pair(boost::edges(theGraph))) {
-    pParentExists[boost::target(e)] = true;
+    pParentExists[boost::target(e, theGraph)] = true;
   }
 
   Graph::vertex_descriptor r;
@@ -28,6 +29,6 @@ void renderSvg(unsigned int root) const {
   }
 
   std::stringstream ss;
-  ::renderSvg(theGraph, r, ss);
+  svg::render(theGraph, r, ss);
   response::respond(response::SVG, "fragment", ss.str().c_str());
 }

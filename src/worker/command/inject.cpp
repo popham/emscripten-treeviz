@@ -1,5 +1,6 @@
-#include  "command.hpp"
+#include  "../command.hpp"
 
+#include <rapidjson/reader.h>
 #include <worker/builder.hpp>
 
 unsigned int computeRoot(void) {
@@ -18,7 +19,7 @@ unsigned int computeRoot(void) {
   for (auto v : range_pair(boost::vertices(theGraph))) {
     if (pParentExists[v]) {
       ++rootCount;
-      theGraph[graph_bundle].root = v;
+      theGraph[boost::graph_bundle].root = v;
     }
   }
 
@@ -28,16 +29,16 @@ unsigned int computeRoot(void) {
 void inject(char const * const json) {
   rapidjson::Reader reader;
 
-  Stream is(json);
-  VertexPass vp(&theGraph, vertexPath);
+  rapidjson::StringStream is(json);
+  VertexPass vp(&theGraph, theVertexPath);
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, vp)) {
-    theGraph.clear()
+    theGraph.clear();
     response::log("Serialization of vertex data to data structure failed");
     response::error(reader.GetParseError());
     return;
   }
 
-  is = Stream(json); // Reset stream.
+  is = rapidjson::StringStream(json); // Reset stream.
   EdgePass ep(&theGraph, theParentsBase, theParentsPath);
   if (!reader.Parse<rapidjson::kParseDefaultFlags>(is, ep)) {
     theGraph.clear();
@@ -46,7 +47,7 @@ void inject(char const * const json) {
     return;
   }
 
-  unsigned int cout = computeRoot();
+  unsigned int count = computeRoot();
   if (count == 0) {
     response::error("All of the candidate vertices have in-edges.  Provide DAG data.");
   } else if (count > 1) {

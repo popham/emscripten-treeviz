@@ -1,4 +1,4 @@
-#include "command.hpp"
+#include "../command.hpp"
 
 void stop(void) {
   theGraph.clear();

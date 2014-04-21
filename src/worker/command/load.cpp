@@ -1,4 +1,7 @@
-#include "command.hpp"
+#include "../command.hpp"
+
+#include <worker/bound_buffer.hpp>
+#include <worker/request.hpp>
 
 void load(char const * const url) {
   bound_buffer bb;
