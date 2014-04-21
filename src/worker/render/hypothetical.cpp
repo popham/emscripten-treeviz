@@ -6,7 +6,7 @@
 #include <worker/visitor/properties.hpp>
 #include <worker/visitor/grid.hpp>
 
-namespace render {
+namespace svg {
 
   namespace _hypo {
 

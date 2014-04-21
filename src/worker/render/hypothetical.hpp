@@ -1,8 +1,6 @@
-#include <sstream>
+#include "../render.hpp"
 
-#include "../graph.hpp"
-
-namespace render {
+namespace svg {
 
   void hypothetical(Graph const &,
                     typename Graph::vertex_descriptor root,
